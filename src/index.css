@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-size: 100%;
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+
+  @media (min-width: 1024px) {
+    html {
+      font-size: 90%;
+    }
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+}
