@@ -50,16 +50,16 @@ export default function Footer() {
 
         <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center relative z-10">
           <div className="text-white max-w-[500px]">
-            <h2 className="text-[2.2rem] md:text-[2.8rem] font-medium mb-4 leading-tight">Grow with Coachable</h2>
+            <h2 className="text-[2.2rem] md:text-[2.8rem] font-medium mb-4 leading-tight">Rent Space at Latham Gateway</h2>
             <p className="text-white/80 text-[1.05rem] leading-relaxed mb-8 font-light">
-              Secure interviews, master essential skills, and thrive in your job. Coachable is your direct route to professional success.
+              Join our collaborative healthcare community. Premium, adaptable spaces on the second floor are available for specialized practitioners looking to grow their practice.
             </p>
             <div className="flex gap-4">
               <button className="bg-white text-[#114b53] rounded-full px-8 py-3 text-sm font-semibold transition-transform hover:-translate-y-0.5">
-                Apply now
+                Inquire About Space
               </button>
               <button className="bg-transparent border border-white/50 text-white rounded-full px-8 py-3 text-sm font-semibold hover:bg-white/10 transition-colors">
-                Talk with us
+                Contact Us
               </button>
             </div>
           </div>
@@ -83,7 +83,7 @@ export default function Footer() {
           {/* Top part of white section */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-12">
             <h3 className="text-[#1a1a1a] text-[1.8rem] md:text-[2.2rem] font-medium leading-tight max-w-[600px] tracking-tight">
-              We teach everything you need to land and succeed at a tech career
+              A healing space built for your well-being, all under one roof
             </h3>
             
             {/* Trustpilot Review */}
@@ -96,7 +96,7 @@ export default function Footer() {
                 ))}
               </div>
               <div className="text-[0.95rem] font-medium text-[#1a1a1a] flex items-center gap-1.5">
-                <span className="font-bold">105</span> reviews on 
+                <span className="font-bold">48</span> reviews on 
                 <div className="flex items-center gap-1 font-bold ml-1">
                   <Star fill="#00b67a" stroke="#00b67a" size={18} /> Trustpilot
                 </div>
@@ -109,15 +109,15 @@ export default function Footer() {
           {/* Bottom Links part */}
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="text-[#666] text-[0.85rem] font-medium">
-              © 2024 Coachable. All Rights Reserved.
+              © 2025 Latham Gateway. All Rights Reserved.
             </div>
             
             <div className="flex flex-wrap justify-center gap-6 md:gap-8 text-[0.85rem] font-medium text-[#666]">
-              <a href="#" className="hover:text-[#1a1a1a] transition-colors">Program</a>
-              <a href="#" className="hover:text-[#1a1a1a] transition-colors">Testimonials</a>
-              <a href="#" className="hover:text-[#1a1a1a] transition-colors">Pricing</a>
-              <a href="#" className="hover:text-[#1a1a1a] transition-colors">Why us</a>
-              <a href="#" className="hover:text-[#1a1a1a] transition-colors">FAQs</a>
+              <a href="#" className="hover:text-[#1a1a1a] transition-colors">Services</a>
+              <a href="#" className="hover:text-[#1a1a1a] transition-colors">Rent / Lease</a>
+              <a href="#" className="hover:text-[#1a1a1a] transition-colors">Our Floors</a>
+              <a href="#" className="hover:text-[#1a1a1a] transition-colors">About Us</a>
+              <a href="#" className="hover:text-[#1a1a1a] transition-colors">Contact</a>
             </div>
 
             <div className="flex items-center gap-4 text-[#888]">
