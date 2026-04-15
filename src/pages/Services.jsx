@@ -1,4 +1,5 @@
 import React from 'react';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { Link } from 'react-router-dom';
 import {
   Activity,
@@ -205,14 +206,12 @@ export default function Services() {
               </div>
 
               <div className="relative hidden min-h-[220px] items-center justify-center md:flex">
-                <div className="absolute inset-x-8 inset-y-4 rounded-[24px] bg-[#ddeceb]" />
-                <div className="relative flex h-[148px] w-[148px] items-center justify-center rounded-[28px] border border-[#cfe0dd] bg-[#e7f1ef]">
-                  <div className="absolute top-[-18px] h-8 w-14 rounded-t-[16px] border border-b-0 border-[#cfe0dd] bg-[#e7f1ef]" />
-                  <div className="relative h-16 w-16">
-                    <div className="absolute left-1/2 top-0 h-full w-4 -translate-x-1/2 rounded-full bg-brand-teal/16" />
-                    <div className="absolute left-0 top-1/2 h-4 w-full -translate-y-1/2 rounded-full bg-brand-teal/16" />
-                  </div>
-                </div>
+                <DotLottieReact
+                  src="/lottie/health.lottie"
+                  autoplay
+                  loop
+                  style={{ height: '280px', width: '280px' }}
+                />
               </div>
             </div>
           </div>
