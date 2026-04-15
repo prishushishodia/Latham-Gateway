@@ -111,7 +111,7 @@ export default function Landing() {
             The Radiant Sanctuary for Healing
           </h1>
           <p className="text-brand-text-muted text-[1.1rem] leading-relaxed mb-8 font-normal">
-            Welcome to Latham Gateway, a comprehensive healthcare facility
+            Welcome to Lathium Gateway, a comprehensive healthcare facility
             designed to restore and rejuvenate in a space that feels like home.
           </p>
           <div className="flex flex-wrap gap-3">

@@ -7,7 +7,7 @@ export default function Navbar() {
   const location = useLocation();
   const navItems = [
     { label: 'Home', href: '/' },
-    { label: 'Floor Breakdown', href: '/specialties' },
+    { label: 'Floor Breakdown', href: '/floor-breakdown' },
     { label: 'Services', href: '/services' },
   ];
 
@@ -16,7 +16,7 @@ export default function Navbar() {
       <nav className="flex justify-between items-center w-full max-w-[1100px] bg-white/60 backdrop-blur-md border border-white/30 px-4 md:px-6 py-3 rounded-full shadow-sm pointer-events-auto gap-3 md:gap-4">
         <Link to="/" className="flex items-center gap-2 font-semibold text-brand-teal text-[1.1rem]">
           <ShieldPlus size={24} className="fill-brand-teal text-brand-teal" />
-          <span className="hidden sm:inline">Latham Gateway</span>
+          <span className="hidden sm:inline">Lathium Gateway</span>
         </Link>
 
         <div className="flex flex-1 justify-center md:flex-none">
