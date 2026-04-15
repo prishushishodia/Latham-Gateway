@@ -20,6 +20,13 @@ function AntigravityInner({
   particleShape = 'capsule',
   fieldStrength = 12,
   cursorFollowSpeed = 0.12,
+  // fadeRadius controls how far from the ring edge particles become invisible.
+  // Default 10 = original tight-ring behaviour. Large values (e.g. 300) keep
+  // particles visible across the whole canvas, giving the scattered-dust look.
+  fadeRadius = 10,
+  // minScale prevents particles from fully disappearing when far from cursor.
+  // 0 = original behaviour; 0.5 = always at least half-scale everywhere.
+  minScale = 0,
 }) {
   const meshRef = useRef(null);
   const { viewport } = useThree();
@@ -131,7 +138,7 @@ function AntigravityInner({
         particle.cy - projectedTargetY,
       );
       const distFromRing = Math.abs(currentDistToMouse - ringRadius);
-      const scaleFactor = Math.max(0, Math.min(1, 1 - distFromRing / 10));
+      const scaleFactor = Math.max(minScale, Math.min(1, 1 - distFromRing / fadeRadius));
       const finalScale =
         scaleFactor *
         (0.8 + Math.sin(particle.t * pulseSpeed) * 0.2 * particleVariance) *
