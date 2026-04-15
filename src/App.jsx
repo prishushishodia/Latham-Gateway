@@ -4,6 +4,8 @@ import Landing from './pages/Landing';
 import Services from './pages/Services';
 import Specialties from './pages/Specialties';
 import Rentals from './pages/Rentals';
+import Contact from './pages/Contact';
+import Patient from './pages/Patient';
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -17,6 +19,8 @@ function App() {
         <Route path="/services" element={<Services />} />
         <Route path="/specialties" element={<Specialties />} />
         <Route path="/rentals" element={<Rentals />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/patient" element={<Patient />} />
       </Routes>
       <Footer />
     </Router>

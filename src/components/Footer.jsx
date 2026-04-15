@@ -1,6 +1,7 @@
 import React from 'react';
 import { Star } from 'lucide-react';
 import Antigravity from './Antigravity';
+import Galaxy from './ui/galaxy';
 
 // Custom inline SVGs for social brands
 const FacebookIcon = ({ size, fill }) => (
