@@ -1,6 +1,7 @@
 import React from 'react';
 import { Star } from 'lucide-react';
 import Antigravity from './Antigravity';
+import Galaxy from './ui/galaxy';
 
 // Custom inline SVGs for social brands
 const FacebookIcon = ({ size, fill }) => (
@@ -25,30 +26,42 @@ const LinkedinIcon = ({ size, fill }) => (
 export default function Footer() {
   return (
     <footer>
-      {/* Top CTA Section */}
+      {/* Top CTA Section — green band */}
       <div className="w-full bg-[#114b53] py-20 px-[5%] relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute inset-0 opacity-80">
-            <Antigravity
-              count={500}
-              color="#ffffff"
-              autoAnimate
-              particleShape="capsule"
-              ringRadius={6.5}
-              magnetRadius={12}
-              waveAmplitude={0.5}
-              particleSize={1.45}
-              rotationSpeed={0.08}
-              depthFactor={0.7}
-              fieldStrength={14}
-              lerpSpeed={0.1}
-              cursorFollowSpeed={0.3}
-            />
-          </div>
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_45%,rgba(255,255,255,0.08),transparent_34%),linear-gradient(90deg,rgba(17,75,83,0.01)_0%,rgba(17,75,83,0.14)_38%,rgba(17,75,83,0.24)_100%)]" />
+        {/* ── Galaxy background (z-0) ── */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <Galaxy
+            density={700}
+            glowColor="#6ef0f0"
+            speed={0.04}
+            opacity={0.38}
+            mouseRepulsion
+          />
         </div>
 
-        <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center relative z-10">
+        {/* ── Antigravity particle layer (z-[1]) ── */}
+        <div className="absolute inset-0 z-[1] pointer-events-none opacity-50">
+          <Antigravity
+            count={300}
+            color="#ffffff"
+            autoAnimate
+            particleShape="capsule"
+            ringRadius={6.5}
+            magnetRadius={12}
+            waveAmplitude={0.5}
+            particleSize={1.2}
+            rotationSpeed={0.08}
+            depthFactor={0.7}
+            fieldStrength={14}
+            lerpSpeed={0.1}
+            cursorFollowSpeed={0.3}
+          />
+        </div>
+
+        {/* ── Colour overlay to keep text readable (z-[2]) ── */}
+        <div className="absolute inset-0 z-[2] pointer-events-none bg-[radial-gradient(circle_at_78%_45%,rgba(255,255,255,0.06),transparent_34%),linear-gradient(90deg,rgba(17,75,83,0.15)_0%,rgba(17,75,83,0.35)_60%,rgba(17,75,83,0.55)_100%)]" />
+
+        <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center relative z-[10]">
           <div className="text-white max-w-[500px]">
             <h2 className="text-[2.2rem] md:text-[2.8rem] font-medium mb-4 leading-tight">Rent Space at Latham Gateway</h2>
             <p className="text-white/80 text-[1.05rem] leading-relaxed mb-8 font-light">

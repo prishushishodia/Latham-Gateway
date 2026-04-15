@@ -14,8 +14,8 @@ import {
 } from 'lucide-react';
 
 const serviceImages = [
-  '/array/wallhaven-5y5dg7.jpg',
-  '/array/wallhaven-5y5vd5.png',
+  '/array/wallhaven-mlwz78.png',
+  '/array/wallhaven-mlwz78.png',
   '/array/wallhaven-7j1g9o.jpg',
   '/array/wallhaven-d8e373.jpg',
   '/array/wallhaven-e89l8k.jpg',
@@ -104,45 +104,51 @@ function ServiceCard({ title, description, cta, icon: Icon, image, index, featur
   const isLeftColumn = index % 2 === 0;
 
   return (
-    <div className="group relative min-w-0 overflow-visible">
+    <article
+      className={`group relative flex overflow-hidden rounded-[28px] border border-[#e8e2dc] bg-white shadow-[0_10px_30px_rgba(17,75,83,0.04)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(17,75,83,0.12)] ${
+        featured ? 'md:min-h-[22.75rem]' : 'min-h-[200px]'
+      }`}
+    >
+      {/* Inner flex row — reversed for left col so image slot is on the left */}
       <div
-        className={`pointer-events-none absolute top-0 z-20 hidden h-full overflow-hidden rounded-[26px] border border-[#d8e7e4] bg-white/95 opacity-0 shadow-[0_18px_45px_rgba(17,75,83,0.16)] transition-[width,opacity] duration-300 ease-out md:block ${
-          isLeftColumn
-            ? 'right-[calc(100%+1.25rem)] w-0 group-hover:w-[280px] group-hover:opacity-100'
-            : 'left-[calc(100%+1.25rem)] w-0 group-hover:w-[280px] group-hover:opacity-100'
+        className={`flex w-full transition-all duration-[420ms] ease-[cubic-bezier(0.4,0,0.2,1)] ${
+          isLeftColumn ? 'flex-row-reverse' : 'flex-row'
         }`}
       >
-        <img
-          src={image}
-          alt=""
-          className="h-full w-[280px] object-cover"
-        />
-      </div>
-
-      <article
-        className={`relative h-full rounded-[28px] border border-[#e8e2dc] bg-white p-6 shadow-[0_10px_30px_rgba(17,75,83,0.04)] transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(17,75,83,0.08)] md:p-7 ${
-          featured ? 'md:min-h-[22.75rem]' : ''
-        }`}
-      >
-        <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#e8f2f0] text-brand-teal">
-          <Icon size={20} strokeWidth={2.1} />
+        {/* Content — always visible */}
+        <div className="flex flex-1 flex-col justify-center p-6 transition-all duration-[420ms] md:p-7" style={{ minWidth: 0 }}>
+          <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#e8f2f0] text-brand-teal">
+            <Icon size={20} strokeWidth={2.1} />
+          </div>
+          <h3
+            className={`mb-3 font-medium tracking-[-0.03em] text-brand-text-main ${
+              featured ? 'text-[1.65rem]' : 'text-[1.45rem]'
+            }`}
+          >
+            {title}
+          </h3>
+          <p className="mb-7 text-[0.98rem] leading-7 text-[#667085]">{description}</p>
+          <Link
+            to="/specialties"
+            className="inline-flex items-center gap-2 text-[0.9rem] font-semibold text-brand-teal transition-all duration-200 group-hover:gap-3 hover:opacity-75"
+          >
+            {cta} <ArrowRight size={15} />
+          </Link>
         </div>
-        <h3
-          className={`mb-3 font-medium tracking-[-0.03em] text-brand-text-main ${
-            featured ? 'text-[1.65rem]' : 'text-[1.45rem]'
-          }`}
+
+        {/* Image — width: 0 by default, expands to ~44% on card hover */}
+        <div
+          className="h-auto w-0 flex-shrink-0 overflow-hidden transition-all duration-[420ms] ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:w-[44%]"
         >
-          {title}
-        </h3>
-        <p className="mb-7 text-[0.98rem] leading-7 text-[#667085]">{description}</p>
-        <Link
-          to="/specialties"
-          className="inline-flex items-center gap-2 text-[0.9rem] font-semibold text-brand-teal transition-opacity hover:opacity-75"
-        >
-          {cta} <ArrowRight size={15} />
-        </Link>
-      </article>
-    </div>
+          <img
+            src={image}
+            alt={title}
+            className="h-full w-full object-cover opacity-0 scale-105 transition-all duration-[450ms] ease-[cubic-bezier(0.4,0,0.2,1)] delay-100 group-hover:opacity-100 group-hover:scale-100"
+            style={{ minWidth: '180px' }}
+          />
+        </div>
+      </div>
+    </article>
   );
 }
 
@@ -166,7 +172,7 @@ export default function Services() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-x-12">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-x-8 md:gap-y-6">
             {serviceCards.map((card, index) => (
               <ServiceCard
                 key={card.title}
