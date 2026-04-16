@@ -4,14 +4,7 @@ import {
   ArrowRight, ChevronRight, ChevronLeft,
   MapPin, Sparkles, Building2, Stethoscope, Key,
 } from 'lucide-react';
-import axios from 'axios';
-import { urlFor } from '../sanityClient';
-
-// ─── Sanity ───────────────────────────────────────────────────────────────────
-const SANITY_PROJECT_ID  = '6v61tp8e';
-const SANITY_DATASET     = 'production';
-const SANITY_API_VERSION = '2024-01-01';
-const SANITY_API_URL     = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}`;
+import { client, urlFor } from '../sanityClient';
 
 const FLOORS_QUERY = `*[_type == "floorBreakdownPage"][0]{
   hero{
@@ -67,7 +60,7 @@ const FALLBACK_DATA = {
     badge: 'Facility Directory',
     headingLine1: 'Every floor,',
     headingLine2: 'a purpose.',
-    description: 'From primary care to premium rental suites, each level of Lathium Gateway is designed with intention.',
+    description: 'From primary care to premium rental suites, each level of Lathamw Gateway is designed with intention.',
     floors: [
       {
         tabLabel: 'Medical Hub',
@@ -110,7 +103,7 @@ const FALLBACK_DATA = {
     ],
     ctaBox: {
       heading: 'Ready to experience it in person?',
-      subtext: 'Schedule a tour and see how Lathium Gateway can elevate your practice or care experience.',
+      subtext: 'Schedule a tour and see how Lathamw Gateway can elevate your practice or care experience.',
       primaryLabel: 'Book Appointment',
       secondaryLabel: 'Schedule a Tour',
     },
@@ -123,10 +116,9 @@ export default function FloorBreakdown() {
   const [activeFloor, setActiveFloor] = useState(0);
 
   useEffect(() => {
-    axios
-      .get(SANITY_API_URL, { params: { query: FLOORS_QUERY } })
-      .then(async (res) => {
-        const result = res.data.result;
+    client
+      .fetch(FLOORS_QUERY)
+      .then(async (result) => {
         if (!result) return;
 
         // Collect every CMS image URL that will appear on screen
@@ -499,7 +491,7 @@ export default function FloorBreakdown() {
         <div className="mx-auto max-w-[1220px]">
           <div className="mb-8 flex items-end justify-between">
             <h3 className="text-[1.6rem] font-medium tracking-tight text-brand-text-main">
-              Inside <span className="text-brand-teal">Lathium Gateway</span>
+              Inside <span className="text-brand-teal">Lathamw Gateway</span>
             </h3>
             <Link to="/contact" className="text-[0.85rem] font-semibold text-brand-teal hover:underline flex items-center gap-1">
               Book a tour <ArrowRight size={13} />

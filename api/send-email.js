@@ -16,7 +16,7 @@ export default async function handler(req, res) {
   try {
     await resend.emails.send({
       from: 'Latham Gateway Contact Form <onboarding@resend.dev>',
-      to: ['priyanshushishodia008@gmail.com'],
+      to: [process.env.CONTACT_EMAIL],
       replyTo: email,
       subject: `New Contact Form Submission from ${name}`,
       html: `

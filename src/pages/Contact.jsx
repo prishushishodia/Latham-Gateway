@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MapPin, Phone, Mail, Clock, ChevronDown, ArrowRight } from 'lucide-react';
-import axios from 'axios';
-
-// ─── Sanity ───────────────────────────────────────────────────────────────────
-const SANITY_PROJECT_ID  = '6v61tp8e';
-const SANITY_DATASET     = 'production';
-const SANITY_API_VERSION = '2024-01-01';
-const SANITY_API_URL     = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}`;
+import { client } from '../sanityClient';
 
 const CONTACT_QUERY = `*[_type == "contactPage"][0]{
   hero{ badge, headingLine1, headingLine2, subtext },
@@ -41,7 +35,7 @@ const FALLBACK = {
   ],
   map: {
     embedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2934.123456789!2d-73.7600!3d42.7450!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89de0f0000000001%3A0x1!2s719+New+Loudon+Rd%2C+Latham%2C+NY+12110!5e0!3m2!1sen!2sus!4v1700000000000',
-    title: 'Lathium Gateway Location',
+    title: 'Lathamw Gateway Location',
   },
   faq: {
     heading: 'Frequently Asked Questions',
@@ -87,9 +81,9 @@ export default function Contact() {
   const [error, setError]   = useState('');
 
   useEffect(() => {
-    axios
-      .get(SANITY_API_URL, { params: { query: CONTACT_QUERY } })
-      .then((res) => setData(res.data.result))
+    client
+      .fetch(CONTACT_QUERY)
+      .then((result) => setData(result))
       .catch(console.error);
   }, []);
 
@@ -299,7 +293,7 @@ export default function Contact() {
           {map.embedUrl && (
             <div className="mt-8 overflow-hidden rounded-[28px] border border-[#d8e7e4] shadow-[0_10px_30px_rgba(17,75,83,0.05)]">
               <iframe
-                title={map.title || 'Lathium Gateway Location'}
+                title={map.title || 'Lathamw Gateway Location'}
                 src={map.embedUrl}
                 width="100%"
                 height="360"

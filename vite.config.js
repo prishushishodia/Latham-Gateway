@@ -26,7 +26,22 @@ export default defineConfig(({ mode }) => {
             req.on('data', chunk => (body += chunk.toString()));
             req.on('end', async () => {
               try {
-                const { name, email, phone, service, message } = JSON.parse(body);
+                const raw = JSON.parse(body);
+
+                // Escape HTML special chars to prevent XSS in the email template
+                const escHtml = (str) =>
+                  String(str ?? '')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+
+                const name    = escHtml(raw.name);
+                const email   = escHtml(raw.email);
+                const phone   = escHtml(raw.phone);
+                const service = escHtml(raw.service);
+                const message = escHtml(raw.message);
 
                 if (!name || !email || !message) {
                   res.statusCode = 400;
@@ -38,15 +53,15 @@ export default defineConfig(({ mode }) => {
                 const resend = new Resend(env.RESEND_API_KEY);
 
                 await resend.emails.send({
-                  from: 'Latham Gateway Contact Form <onboarding@resend.dev>',
-                  to: ['priyanshushishodia008@gmail.com'],
+                  from: 'Lathamw Gateway Contact Form <onboarding@resend.dev>',
+                  to: [env.CONTACT_EMAIL],
                   replyTo: email,
                   subject: `New Contact Form Submission from ${name}`,
                   html: `
                     <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; color: #1a2e2c;">
                       <div style="background: #026362; padding: 32px; border-radius: 12px 12px 0 0;">
                         <h1 style="color: white; margin: 0; font-size: 22px; font-weight: 500;">New Contact Form Submission</h1>
-                        <p style="color: rgba(255,255,255,0.7); margin: 8px 0 0; font-size: 14px;">Latham Gateway Medical Center</p>
+                        <p style="color: rgba(255,255,255,0.7); margin: 8px 0 0; font-size: 14px;">Lathamw Gateway Medical Center</p>
                       </div>
                       <div style="background: white; padding: 32px; border: 1px solid #d8e7e4; border-top: none; border-radius: 0 0 12px 12px;">
                         <table style="width: 100%; border-collapse: collapse;">

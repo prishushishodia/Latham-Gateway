@@ -1,13 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import Antigravity from './Antigravity';
-
-// ─── Sanity ───────────────────────────────────────────────────────────────────
-const SANITY_PROJECT_ID  = '6v61tp8e';
-const SANITY_DATASET     = 'production';
-const SANITY_API_VERSION = '2024-01-01';
-const SANITY_API_URL     = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}`;
+import { client } from '../sanityClient';
 
 const FOOTER_QUERY = `*[_type == "footerSection"][0]{
   cta{ heading, subtext, inquireLabel, inquireHref, contactLabel, contactHref },
@@ -18,7 +12,7 @@ const FOOTER_QUERY = `*[_type == "footerSection"][0]{
 // ─── Fallback (renders instantly — no flash) ──────────────────────────────────
 const FALLBACK = {
   cta: {
-    heading:      'Rent Space at Lathium Gateway',
+    heading:      'Rent Space at Lathamw Gateway',
     subtext:      'Join our collaborative healthcare community. Premium, adaptable spaces on the top floor are available for specialized practitioners looking to grow their practice.',
     inquireLabel: 'Inquire About Space',
     inquireHref:  '/rentals#inquiry',
@@ -31,16 +25,16 @@ const FALLBACK = {
     { label: 'Our Floors',   href: '/floor-breakdown'   },
     { label: 'Contact',      href: '/contact'           },
   ],
-  copyrightText: '© 2026 Lathium Gateway. All Rights Reserved.',
+  copyrightText: '© 2026 Lathamw Gateway. All Rights Reserved.',
 };
 
 export default function Footer() {
   const [data, setData] = useState(FALLBACK);
 
   useEffect(() => {
-    axios
-      .get(SANITY_API_URL, { params: { query: FOOTER_QUERY } })
-      .then((res) => { if (res.data.result) setData(res.data.result); })
+    client
+      .fetch(FOOTER_QUERY)
+      .then((result) => { if (result) setData(result); })
       .catch(console.error);
   }, []);
 

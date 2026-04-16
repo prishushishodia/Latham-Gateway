@@ -7,14 +7,7 @@ import {
   SquareArrowOutUpRight,
   Stethoscope,
 } from 'lucide-react';
-import axios from 'axios';
-import { urlFor } from '../sanityClient';
-
-// ─── Sanity ───────────────────────────────────────────────────────────────────
-const SANITY_PROJECT_ID  = '6v61tp8e';
-const SANITY_DATASET     = 'production';
-const SANITY_API_VERSION = '2024-01-01';
-const SANITY_API_URL     = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}`;
+import { client, urlFor } from '../sanityClient';
 
 const PATIENT_QUERY = `*[_type == "patientPage"][0]{
   hero{ headingLine1, headingLine2, headingLine3, subtext },
@@ -89,9 +82,9 @@ export default function Patient() {
   const [data, setData] = useState(FALLBACK);
 
   useEffect(() => {
-    axios
-      .get(SANITY_API_URL, { params: { query: PATIENT_QUERY } })
-      .then((res) => { if (res.data.result) setData(res.data.result); })
+    client
+      .fetch(PATIENT_QUERY)
+      .then((result) => { if (result) setData(result); })
       .catch(console.error);
   }, []);
 

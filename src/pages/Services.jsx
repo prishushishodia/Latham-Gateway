@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import {
   Activity,
   ArrowRight,
@@ -14,7 +13,7 @@ import {
   UtensilsCrossed,
   Weight,
 } from 'lucide-react';
-import { urlFor } from '../sanityClient';
+import { client, urlFor } from '../sanityClient';
 
 // Map icon name strings (from Sanity) to lucide-react components
 const ICON_MAP = {
@@ -28,11 +27,6 @@ const ICON_MAP = {
   UtensilsCrossed,
   Weight,
 };
-
-const SANITY_PROJECT_ID = '6v61tp8e';
-const SANITY_DATASET = 'production';
-const SANITY_API_VERSION = '2024-01-01';
-const SANITY_API_URL = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}`;
 
 const SERVICES_QUERY = `*[_type == "servicesPage"][0]{
   hero{
@@ -91,12 +85,12 @@ const FALLBACK_HERO = {
   badge: 'Complete Care Services',
   headingLine1: 'Comprehensive',
   headingLine2: 'Wellness Center',
-  subtext: 'Experience a new standard of healthcare. At Lathium Gateway, we blend advanced clinical expertise with a serene, patient-first environment to support your complete well-being.',
+  subtext: 'Experience a new standard of healthcare. At Lathamw Gateway, we blend advanced clinical expertise with a serene, patient-first environment to support your complete well-being.',
 };
 
 const FALLBACK_CTA = {
   heading: 'Ready to prioritize your health?',
-  subtext: 'Schedule an appointment today and experience the Lathium Gateway difference through thoughtful care, elevated service, and a calm, welcoming environment.',
+  subtext: 'Schedule an appointment today and experience the Lathamw Gateway difference through thoughtful care, elevated service, and a calm, welcoming environment.',
   primaryLabel: 'Book Appointment',
   primaryHref: '/contact',
   secondaryLabel: 'Contact Us',
@@ -173,9 +167,9 @@ export default function Services() {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    axios
-      .get(SANITY_API_URL, { params: { query: SERVICES_QUERY } })
-      .then((res) => setData(res.data.result))
+    client
+      .fetch(SERVICES_QUERY)
+      .then((result) => setData(result))
       .catch(console.error);
   }, []);
 

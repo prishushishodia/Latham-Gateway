@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import {
   ArrowRight,
   Building2,
@@ -13,7 +12,7 @@ import {
   Trees,
   UserRoundCheck,
 } from 'lucide-react';
-import { urlFor } from '../sanityClient';
+import { client, urlFor } from '../sanityClient';
 
 // ─── Icon map ─────────────────────────────────────────────────────────────────
 const ICON_MAP = {
@@ -27,12 +26,6 @@ function DynamicIcon({ name, size = 20 }) {
   const Icon = ICON_MAP[name] ?? Building2;
   return <Icon size={size} />;
 }
-
-// ─── Sanity ───────────────────────────────────────────────────────────────────
-const SANITY_PROJECT_ID = '6v61tp8e';
-const SANITY_DATASET    = 'production';
-const SANITY_API_VERSION = '2024-01-01';
-const SANITY_API_URL = `https://${SANITY_PROJECT_ID}.api.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}`;
 
 const RENTALS_QUERY = `*[_type == "rentalsPage"][0]{
   hero{
@@ -58,7 +51,7 @@ const FALLBACK = {
     badge: 'Second Floor Leasing',
     headingLine1: 'The Future of',
     headingLine2: 'Clinical Space',
-    subtext: "Lathium Gateway\u2019s premium second-floor suites offer a calm, design-forward setting for modern medical excellence. Elevate your practice in a space shaped for patient comfort and professional growth.",
+    subtext: "Lathamw Gateway\u2019s premium second-floor suites offer a calm, design-forward setting for modern medical excellence. Elevate your practice in a space shaped for patient comfort and professional growth.",
     image: null,
     availableArea: '2,400 \u2013 8,500 SQFT',
     status: 'Now Leasing',
@@ -82,7 +75,7 @@ const FALLBACK = {
   locationSection: {
     badge: 'Prime District',
     heading: 'Strategic Location',
-    subtext: 'Located in the heart of a growing medical corridor, Lathium Gateway offers direct access to established providers, transit convenience, and a patient-friendly setting for modern care.',
+    subtext: 'Located in the heart of a growing medical corridor, Lathamw Gateway offers direct access to established providers, transit convenience, and a patient-friendly setting for modern care.',
     image: null,
     locationPoints: [
       '3 mins to central transit access',
@@ -118,9 +111,9 @@ export default function Rentals() {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    axios
-      .get(SANITY_API_URL, { params: { query: RENTALS_QUERY } })
-      .then((res) => setData(res.data.result))
+    client
+      .fetch(RENTALS_QUERY)
+      .then((result) => setData(result))
       .catch(console.error);
   }, []);
 
