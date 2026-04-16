@@ -1,4 +1,4 @@
-/* eslint-disable react/no-unknown-property */
+/* eslint-disable react-hooks/purity */
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
@@ -36,7 +36,6 @@ function GalaxyInner({
     const radius = 14;
 
     for (let i = 0; i < density; i++) {
-      const t = i / density;
       const r = Math.pow(Math.random(), 0.6) * radius;
       const arm = Math.floor(Math.random() * arms);
       const armAngle = (arm / arms) * Math.PI * 2;

@@ -16,6 +16,7 @@ export default function PillNav({
   hoverPillColor = '#114b53',
   mobileMenuColor = '#ffffff',
   initialLoadAnimation = false,
+  extraMobileItems = [],
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const hoverRefs = useRef([]);
@@ -258,7 +259,7 @@ export default function PillNav({
         onClick={toggleMobileMenu}
         aria-label="Toggle navigation"
         aria-expanded={isMobileMenuOpen}
-        className="flex h-11 w-11 items-center justify-center rounded-full md:hidden"
+        className="flex h-11 w-11 items-center justify-center rounded-full md:hidden ml-auto"
         style={{ background: 'var(--pillnav-base)' }}
       >
         <span className="flex flex-col gap-1">
@@ -298,6 +299,23 @@ export default function PillNav({
               </li>
             );
           })}
+          {extraMobileItems.length > 0 && (
+            <>
+              <li className="my-1 border-t border-[#e5e7eb]" />
+              {extraMobileItems.map((item, idx) => (
+                <li key={idx}>
+                  <Link
+                    to={item.href}
+                    onClick={closeMobileMenu}
+                    className="block rounded-full px-4 py-3 text-[0.95rem] font-medium transition-colors"
+                    style={{ color: 'var(--pillnav-text)' }}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </>
+          )}
         </ul>
       </div>
     </div>
