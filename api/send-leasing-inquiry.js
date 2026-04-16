@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { name, email, phone, service, message } = req.body;
+  const { name, email, phone, message } = req.body;
 
   if (!name || !email || !message) {
     return res.status(400).json({ error: 'Missing required fields' });
@@ -15,15 +15,15 @@ export default async function handler(req, res) {
 
   try {
     await resend.emails.send({
-      from: 'Latham Gateway Contact Form <onboarding@resend.dev>',
+      from: 'Latham Gateway Leasing <onboarding@resend.dev>',
       to: [globalThis.process?.env?.CONTACT_EMAIL || 'placeholder@example.com'],
       replyTo: email,
-      subject: `New Contact Form Submission from ${name}`,
+      subject: `New Leasing Inquiry from ${name}`,
       html: `
         <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; color: #1a2e2c;">
           <div style="background: #026362; padding: 32px; border-radius: 12px 12px 0 0;">
-            <h1 style="color: white; margin: 0; font-size: 22px; font-weight: 500;">New Contact Form Submission</h1>
-            <p style="color: rgba(255,255,255,0.7); margin: 8px 0 0; font-size: 14px;">Latham Gateway Medical Center</p>
+            <h1 style="color: white; margin: 0; font-size: 22px; font-weight: 500;">New Leasing Inquiry</h1>
+            <p style="color: rgba(255,255,255,0.7); margin: 8px 0 0; font-size: 14px;">Second Floor — Latham Gateway Medical Center</p>
           </div>
 
           <div style="background: white; padding: 32px; border: 1px solid #d8e7e4; border-top: none; border-radius: 0 0 12px 12px;">
@@ -53,15 +53,6 @@ export default async function handler(req, res) {
                   <a href="tel:${phone}" style="color: #026362;">${phone}</a>
                 </td>
               </tr>` : ''}
-              ${service ? `
-              <tr>
-                <td style="padding: 12px 0; border-bottom: 1px solid #f0f4f4;">
-                  <span style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #667085;">Service</span>
-                </td>
-                <td style="padding: 12px 0; border-bottom: 1px solid #f0f4f4; font-size: 15px;">
-                  ${service}
-                </td>
-              </tr>` : ''}
               <tr>
                 <td style="padding: 12px 0; vertical-align: top;">
                   <span style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #667085;">Message</span>
@@ -85,6 +76,6 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true });
   } catch (err) {
     console.error('Resend error:', err);
-    return res.status(500).json({ error: 'Failed to send email. Please try again.' });
+    return res.status(500).json({ error: 'Failed to send message. Please try again.' });
   }
 }

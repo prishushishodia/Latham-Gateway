@@ -35,8 +35,8 @@ const FALLBACK = {
   portalCards: [
     {
       title:       'Dental Care',
-      description: 'Access your Dentrix portal for oral health history, x-rays, and dental appointment scheduling.',
-      cta:         'Dental Patient Portal (Dentrix)',
+      description: 'Access your portal for oral health history, x-rays, and dental appointment scheduling.',
+      cta:         'Dental Patient Portal',
       icon:        'Shield',
       iconBg:      'bg-[#dce8e8]',
       buttonColor: '#0a727f',
@@ -44,8 +44,8 @@ const FALLBACK = {
     },
     {
       title:       'General Health',
-      description: 'Login to Medent for primary care, specialized treatments, labs, and telehealth messaging.',
-      cta:         'All Other Services Patient Portal (Medent)',
+      description: 'Login for primary care, specialized treatments, labs, and telehealth messaging.',
+      cta:         'All Other Services Patient Portal',
       icon:        'BriefcaseMedical',
       iconBg:      'bg-[#e6eaef]',
       buttonColor: '#496f95',
@@ -119,19 +119,19 @@ export default function Patient() {
         </div>
 
         {/* ── Portal cards ── */}
-        <div className="mx-auto mt-16 grid max-w-[710px] gap-6 md:grid-cols-2">
+        <div className="mx-auto mt-16 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-2 md:gap-6 md:max-w-[710px]">
           {portalCards.map((card) => (
             <article
               key={card.title}
-              className="rounded-[28px] border border-[#e7ebef] bg-white px-7 pb-7 pt-6 text-center shadow-[0_16px_45px_rgba(31,42,50,0.05)]"
+              className="rounded-[20px] sm:rounded-[28px] border border-[#e7ebef] bg-white px-4 sm:px-5 sm:px-7 pb-4 sm:pb-5 sm:pb-7 pt-4 sm:pt-5 sm:pt-6 text-center shadow-[0_16px_45px_rgba(31,42,50,0.05)]"
             >
-              <div className={`mx-auto flex h-14 w-14 items-center justify-center rounded-[16px] ${card.iconBg || 'bg-[#dce8e8]'}`}>
-                <DynamicIcon name={card.icon} size={24} className="text-[#0a6d7a]" strokeWidth={2.1} />
+              <div className={`mx-auto flex h-10 sm:h-12 w-10 sm:w-12 w-14 items-center justify-center rounded-[12px] sm:rounded-[16px] ${card.iconBg || 'bg-[#dce8e8]'}`}>
+                <DynamicIcon name={card.icon} size={18} sm:size={20} sm:size={24} className="text-[#0a6d7a]" strokeWidth={2.1} />
               </div>
-              <h2 className="mt-8 text-[1.15rem] font-semibold tracking-[-0.03em] text-[#111a21] md:text-[1.9rem]">
+              <h2 className="mt-4 sm:mt-6 sm:mt-8 text-[0.9rem] sm:text-[1rem] sm:text-[1.15rem] font-semibold tracking-[-0.03em] text-[#111a21] md:text-[1.9rem]">
                 {card.title}
               </h2>
-              <p className="mx-auto mt-4 max-w-[280px] text-[0.98rem] leading-[1.55] text-[#5d6872]">
+              <p className="mx-auto mt-2 sm:mt-3 sm:mt-4 max-w-[280px] text-[0.75rem] sm:text-[0.85rem] sm:text-[0.98rem] leading-[1.4] sm:leading-[1.5] sm:leading-[1.55] text-[#5d6872]">
                 {card.description}
               </p>
               <a
@@ -139,10 +139,9 @@ export default function Patient() {
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ backgroundColor: card.buttonColor || '#0a727f' }}
-                className="mt-10 inline-flex min-h-[58px] w-full items-center justify-center gap-2 rounded-full px-6 text-[0.96rem] font-semibold text-white transition-all duration-200 hover:opacity-90"
+                className="mt-4 sm:mt-6 sm:mt-10 inline-flex min-h-[44px] sm:min-h-[50px] sm:min-h-[58px] w-full items-center justify-center rounded-full px-3 sm:px-4 sm:px-6 text-[0.75rem] sm:text-[0.85rem] sm:text-[0.96rem] font-semibold text-white transition-all duration-200 hover:opacity-90"
               >
                 <span>{card.cta}</span>
-                <SquareArrowOutUpRight size={15} strokeWidth={2.2} />
               </a>
             </article>
           ))}

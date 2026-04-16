@@ -4,6 +4,7 @@ import {
   Building2,
   Car,
   Cross,
+  Mail,
   MapPinned,
   MoveRight,
   Ruler,
@@ -12,7 +13,10 @@ import {
   Trees,
   UserRoundCheck,
 } from 'lucide-react';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { client, urlFor } from '../sanityClient';
+import { BlurImage } from '../components/BlurImage';
+import { LOCAL_BLURHASH } from '../imagePlaceholders';
 
 // ─── Icon map ─────────────────────────────────────────────────────────────────
 const ICON_MAP = {
@@ -22,7 +26,7 @@ const ICON_MAP = {
   UserRoundCheck,
 };
 
-function DynamicIcon({ name, size = 20 }) {
+function DynamicIcon({ name, size }) {
   const Icon = ICON_MAP[name] ?? Building2;
   return <Icon size={size} />;
 }
@@ -30,18 +34,18 @@ function DynamicIcon({ name, size = 20 }) {
 const RENTALS_QUERY = `*[_type == "rentalsPage"][0]{
   hero{
     badge, headingLine1, headingLine2, subtext,
-    image, availableArea, status
+    image, "imageLqip": image.asset->metadata.lqip, availableArea, status
   },
   featuresSection{
     heading,
     features[]{ title, description, icon },
-    interiorImage,
+    interiorImage, "interiorLqip": interiorImage.asset->metadata.lqip,
     virtualTourTitle,
     virtualTourDescription
   },
   inquirySection{ heading, subtext },
   locationSection{
-    badge, heading, subtext, image, locationPoints
+    badge, heading, subtext, image, "imageLqip": image.asset->metadata.lqip, locationPoints
   }
 }`;
 
@@ -92,7 +96,7 @@ function getImageSrc(sanityImage, fallbackSrc) {
 }
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
-function InquiryField({ label, placeholder, className = '' }) {
+function InquiryField({ label, placeholder, className = '', ...inputProps }) {
   return (
     <label className={`block ${className}`}>
       <span className="mb-2 block text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[#6b7280]">
@@ -101,6 +105,7 @@ function InquiryField({ label, placeholder, className = '' }) {
       <input
         placeholder={placeholder}
         className="w-full rounded-[16px] border border-[#dbe7e5] bg-[#f7fbfb] px-4 py-3 text-[0.95rem] text-brand-text-main outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand-teal/40"
+        {...inputProps}
       />
     </label>
   );
@@ -108,7 +113,11 @@ function InquiryField({ label, placeholder, className = '' }) {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function Rentals() {
-  const [data, setData] = useState(null);
+  const [data, setData]       = useState(null);
+  const [form, setForm]       = useState({ name: '', email: '', phone: '', message: '' });
+  const [sent, setSent]       = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError]     = useState('');
 
   useEffect(() => {
     client
@@ -123,6 +132,30 @@ export default function Rentals() {
   const location    = data?.locationSection ?? FALLBACK.locationSection;
 
   const locationIcons = [MoveRight, MapPinned, Cross];
+
+  function handleChange(e) {
+    setForm(f => ({ ...f, [e.target.name]: e.target.value }));
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    try {
+      const res = await fetch('/api/send-leasing-inquiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Something went wrong.');
+      setSent(true);
+    } catch (err) {
+      setError(err.message || 'Failed to send message. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#f0f4f4] via-[#e6f0f0] via-[820px] to-white font-inter text-brand-text-main">
@@ -174,36 +207,38 @@ export default function Rentals() {
               </div>
 
               <div className="relative min-h-[420px]">
-                <img
+                <BlurImage
                   src={getImageSrc(hero.image, '/images/commerce.jpeg')}
                   alt="Premium glass-fronted clinical suite interior"
-                  className="h-full w-full object-cover"
+                  lqip={hero.imageLqip}
+                  hash={hero.image ? undefined : LOCAL_BLURHASH['/images/commerce.jpeg']}
+                  fill
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-[rgba(240,244,244,0.18)] via-transparent to-[rgba(17,75,83,0.08)]" />
+                <div className="absolute inset-0 z-10 bg-gradient-to-r from-[rgba(240,244,244,0.18)] via-transparent to-[rgba(17,75,83,0.08)]" />
               </div>
             </div>
           </section>
 
           {/* ── Features + Inquiry ─────────────────────────────── */}
-          <section className="mt-14 grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
+          <section className="mt-10 sm:mt-12 md:mt-14 grid gap-6 sm:gap-8 lg:grid-cols-[1.2fr_0.8fr]">
             <div>
-              <h2 className="mb-6 text-[2.1rem] font-medium tracking-[-0.05em] text-brand-text-main md:text-[3rem]">
+              <h2 className="mb-4 sm:mb-6 text-[2.1rem] font-medium tracking-[-0.05em] text-brand-text-main md:text-[3rem]">
                 {features.heading}
               </h2>
 
-              <div className="grid gap-5 md:grid-cols-2">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-2 gap-5">
                 {(features.features ?? []).map((feature) => (
                   <article
                     key={feature.title}
-                    className="rounded-[28px] border border-[#dbe7e5] bg-white p-6 shadow-[0_10px_28px_rgba(17,75,83,0.04)]"
+                    className="rounded-[20px] sm:rounded-[28px] border border-[#dbe7e5] bg-white p-4 sm:p-5 md:p-6 shadow-[0_10px_28px_rgba(17,75,83,0.04)]"
                   >
-                    <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#e8f2f0] text-brand-teal">
-                      <DynamicIcon name={feature.icon} />
+                    <div className="mb-3 sm:mb-4 md:mb-5 flex h-9 sm:h-10 md:h-12 w-9 sm:w-10 md:w-12 items-center justify-center rounded-xl sm:rounded-2xl bg-[#e8f2f0] text-brand-teal">
+                      <DynamicIcon name={feature.icon} size={16} sm:size={18} md:size={20} />
                     </div>
-                    <h3 className="mb-3 text-[1.3rem] font-medium tracking-[-0.03em] text-brand-text-main">
+                    <h3 className="mb-2 sm:mb-3 text-[0.9rem] sm:text-[1.1rem] md:text-[1.3rem] font-medium tracking-[-0.03em] text-brand-text-main">
                       {feature.title}
                     </h3>
-                    <p className="text-[0.96rem] leading-7 text-[#667085]">
+                    <p className="text-[0.75rem] sm:text-[0.85rem] md:text-[0.96rem] leading-5 sm:leading-6 md:leading-7 text-[#667085]">
                       {feature.description}
                     </p>
                   </article>
@@ -211,12 +246,15 @@ export default function Rentals() {
               </div>
 
               <div className="relative mt-6 overflow-hidden rounded-[30px] border border-[#dbe7e5] bg-white shadow-[0_14px_36px_rgba(17,75,83,0.06)]">
-                <img
+                <BlurImage
                   src={getImageSrc(features.interiorImage, '/images/IMG_4824.jpeg')}
                   alt="Interior suite preview"
-                  className="h-[330px] w-full object-cover"
+                  lqip={features.interiorLqip}
+                  hash={features.interiorImage ? undefined : LOCAL_BLURHASH['/images/IMG_4824.jpeg']}
+                  className="h-[330px]"
+                  imgClassName="h-[330px] w-full"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-brand-teal/10 via-transparent to-transparent" />
+                <div className="absolute inset-0 z-10 bg-gradient-to-t from-brand-teal/10 via-transparent to-transparent" />
                 <div className="absolute bottom-4 left-4 right-4 rounded-[22px] border border-white/30 bg-white/75 px-5 py-4 backdrop-blur-md">
                   <div className="text-[0.92rem] font-semibold text-brand-text-main">
                     {features.virtualTourTitle}
@@ -229,48 +267,90 @@ export default function Rentals() {
             </div>
 
             {/* Inquiry form */}
-            <aside id="inquiry" className="rounded-[30px] border border-[#dbe7e5] bg-white p-7 shadow-[0_16px_40px_rgba(17,75,83,0.07)] md:p-8">
-              <div className="mb-6 h-[3px] w-12 rounded-full bg-brand-teal" />
-              <h2 className="text-[2rem] font-medium tracking-[-0.05em] text-brand-text-main">
-                {inquiry.heading}
-              </h2>
-              <p className="mt-3 max-w-[34rem] text-[0.96rem] leading-7 text-[#667085]">
-                {inquiry.subtext}
-              </p>
+            <aside id="inquiry" className="flex flex-col rounded-[30px] border border-[#dbe7e5] bg-white p-5 sm:p-6 md:p-8 shadow-[0_16px_40px_rgba(17,75,83,0.07)]">
+              {sent ? (
+                <div className="flex flex-1 flex-col items-center justify-center py-10 text-center">
+                  <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-[#e8f2f0] text-brand-teal">
+                    <Mail size={28} />
+                  </div>
+                  <h3 className="mb-3 text-[1.4rem] font-medium tracking-[-0.03em]">Inquiry Sent!</h3>
+                  <p className="max-w-[300px] text-[0.92rem] leading-7 text-[#667085]">
+                    Thank you for reaching out. Our property team will get back to you within 24 hours.
+                  </p>
+                  <button
+                    onClick={() => { setSent(false); setError(''); setForm({ name: '', email: '', phone: '', message: '' }); }}
+                    className="mt-8 inline-flex items-center gap-2 rounded-full border border-[#d8e7e4] px-6 py-2.5 text-[0.88rem] font-semibold text-brand-teal hover:bg-[#f0f8f7] transition-colors"
+                  >
+                    Send Another
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <div className="mb-3 sm:mb-4 md:mb-6 h-[3px] w-12 rounded-full bg-brand-teal" />
+                  <h2 className="text-[1.5rem] sm:text-[1.8rem] md:text-[2rem] font-medium tracking-[-0.05em] text-brand-text-main">
+                    {inquiry.heading}
+                  </h2>
+                  <p className="mt-2 sm:mt-3 max-w-[34rem] text-[0.85rem] sm:text-[0.96rem] leading-6 sm:leading-7 text-[#667085]">
+                    {inquiry.subtext}
+                  </p>
 
-              <form className="mt-8 space-y-4">
-                <InquiryField label="Full Name" placeholder="John Doe" />
-                <div className="grid gap-4 md:grid-cols-2">
-                  <InquiryField label="Email" placeholder="john@clinic.com" />
-                  <InquiryField label="Phone" placeholder="(555) 000-0000" />
-                </div>
-                <label className="block">
-                  <span className="mb-2 block text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[#6b7280]">
-                    Message
-                  </span>
-                  <textarea
-                    placeholder="Tell us about your space requirements..."
-                    className="min-h-[128px] w-full resize-none rounded-[18px] border border-[#dbe7e5] bg-[#f7fbfb] px-4 py-3 text-[0.95rem] text-brand-text-main outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand-teal/40"
-                  />
-                </label>
-                <button
-                  type="button"
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand-teal px-7 py-4 text-[0.96rem] font-semibold text-white transition-colors hover:bg-brand-teal-dark"
-                >
-                  Request Information <ArrowRight size={17} />
-                </button>
-              </form>
+                  <form onSubmit={handleSubmit} className="mt-4 sm:mt-6 flex flex-col flex-1 space-y-6">
+                    <InquiryField label="Full Name" placeholder="John Doe" name="name" value={form.name} onChange={handleChange} required />
+                    <div className="grid gap-6 md:grid-cols-2">
+                      <InquiryField label="Email" placeholder="john@clinic.com" name="email" type="email" value={form.email} onChange={handleChange} required />
+                      <InquiryField label="Phone" placeholder="(555) 000-0000" name="phone" type="tel" value={form.phone} onChange={handleChange} />
+                    </div>
+                    <label className="block">
+                      <span className="mb-2 block text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[#6b7280]">
+                        Message
+                      </span>
+                      <textarea
+                        name="message"
+                        value={form.message}
+                        onChange={handleChange}
+                        required
+                        placeholder="Tell us about your space requirements..."
+                        className="min-h-[128px] w-full resize-none rounded-[18px] border border-[#dbe7e5] bg-[#f7fbfb] px-4 py-3 text-[0.95rem] text-brand-text-main outline-none transition-colors placeholder:text-[#9ca3af] focus:border-brand-teal/40"
+                      />
+                    </label>
 
-              <div className="mt-6 flex flex-wrap gap-4 text-[0.74rem] font-semibold uppercase tracking-[0.12em] text-[#6b7280]">
-                <div className="inline-flex items-center gap-2">
-                  <ShieldCheck size={14} className="text-brand-teal" />
-                  Secure Submission
-                </div>
-                <div className="inline-flex items-center gap-2">
-                  <Cross size={14} className="text-brand-teal" />
-                  Data Encrypted
-                </div>
-              </div>
+                    {error && (
+                      <p className="rounded-[14px] border border-red-200 bg-red-50 px-4 py-3 text-[0.88rem] text-red-600">
+                        {error}
+                      </p>
+                    )}
+
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand-teal px-7 py-4 text-[0.96rem] font-semibold text-white transition-colors hover:bg-brand-teal-dark disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      {loading ? 'Sending…' : <><span>Request Information</span><ArrowRight size={17} /></>}
+                    </button>
+
+                    {/* Lottie grows to fill remaining card height */}
+                    <div className="flex flex-1 min-h-0 items-center justify-center">
+                      <DotLottieReact
+                        src="/lottie/contact-us.lottie"
+                        autoplay
+                        loop
+                        style={{ height: '100%', width: '100%', maxHeight: '340px', maxWidth: '340px' }}
+                      />
+                    </div>
+                  </form>
+
+                  <div className="mt-6 flex flex-wrap gap-4 text-[0.74rem] font-semibold uppercase tracking-[0.12em] text-[#6b7280]">
+                    <div className="inline-flex items-center gap-2">
+                      <ShieldCheck size={14} className="text-brand-teal" />
+                      Secure Submission
+                    </div>
+                    <div className="inline-flex items-center gap-2">
+                      <Cross size={14} className="text-brand-teal" />
+                      Data Encrypted
+                    </div>
+                  </div>
+                </>
+              )}
             </aside>
           </section>
 
@@ -278,13 +358,16 @@ export default function Rentals() {
           <section className="mt-16 grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
             <div className="overflow-hidden rounded-[34px] border border-[#dbe7e5] bg-white p-3 shadow-[0_14px_36px_rgba(17,75,83,0.06)]">
               <div className="relative overflow-hidden rounded-[28px]">
-                <img
+                <BlurImage
                   src={getImageSrc(location.image, '/images/IMG_4822.jpeg')}
                   alt="Map and district context"
-                  className="h-[360px] w-full object-cover"
+                  lqip={location.imageLqip}
+                  hash={location.image ? undefined : LOCAL_BLURHASH['/images/IMG_4822.jpeg']}
+                  className="h-[360px]"
+                  imgClassName="h-[360px] w-full"
                 />
-                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,75,83,0.04),rgba(17,75,83,0.1))]" />
-                <div className="absolute right-4 top-4 rounded-full border border-white/40 bg-white/80 px-3 py-1 text-[0.68rem] font-semibold text-brand-teal backdrop-blur-sm">
+                <div className="absolute inset-0 z-10 bg-[linear-gradient(180deg,rgba(17,75,83,0.04),rgba(17,75,83,0.1))]" />
+                <div className="absolute right-4 top-4 z-10 rounded-full border border-white/40 bg-white/80 px-3 py-1 text-[0.68rem] font-semibold text-brand-teal backdrop-blur-sm">
                   {location.badge}
                 </div>
               </div>

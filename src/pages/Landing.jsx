@@ -5,6 +5,8 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { client } from '../sanityClient';
+import { BlurImage } from '../components/BlurImage';
+import { LOCAL_BLURHASH } from '../imagePlaceholders';
 
 // Map icon name strings (stored in Sanity) to lucide-react components
 const ICON_MAP = {
@@ -102,28 +104,29 @@ export default function Landing() {
     <div className="w-full relative min-h-screen text-brand-text-main font-inter bg-gradient-to-b from-[#f0f4f4] via-[#e6f0f0] via-[800px] to-white">
 
       {/* Hero Section */}
-      <section
-        className="relative min-h-screen flex items-end pl-4 md:pl-8 pr-[5%] pb-9 overflow-hidden mb-20 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/images/IMG_4822.jpeg')" }}
-      >
-        <div className="bg-white/45 backdrop-blur-md border border-white/30 p-8 lg:p-10 rounded-[32px] max-w-[650px] shadow-[0_8px_30px_rgb(0,0,0,0.12)] text-left">
-          <h1 className="text-[2.5rem] md:text-[3.2rem] leading-[1.1] text-brand-text-main mb-4 font-medium tracking-tight">
-            The Radiant Sanctuary for Healing
-          </h1>
-          <p className="text-brand-text-muted text-[1.1rem] leading-relaxed mb-8 font-normal">
-            Welcome to Lathamw Gateway, a comprehensive healthcare facility
-            designed to restore and rejuvenate in a space that feels like home.
-          </p>
-          <div className="flex flex-wrap gap-3">
-            <Link to="/services" className="rounded-full px-6 py-2.5 text-sm font-semibold cursor-pointer inline-flex items-center justify-center bg-brand-teal text-white hover:bg-brand-teal-dark transition-colors duration-200">
-              Explore Services
-            </Link>
-            <Link to="/contact" className="rounded-full px-6 py-2.5 text-sm font-semibold cursor-pointer inline-flex items-center justify-center bg-white text-brand-teal shadow-[0_2px_8px_rgba(0,0,0,0.05)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-all duration-200">
-              Contact Us
-            </Link>
-            <Link to="/patient" className="rounded-full px-6 py-2.5 text-sm font-semibold cursor-pointer inline-flex items-center justify-center bg-white/80 text-brand-text-main border border-white/60 hover:bg-white transition-all duration-200">
-              Patient Portal
-            </Link>
+      <section className="relative min-h-screen flex items-end pl-4 md:pl-8 pr-[5%] pb-9 overflow-hidden mb-20">
+        <BlurImage
+          src="/images/IMG_4822.jpeg"
+          hash={LOCAL_BLURHASH['/images/IMG_4822.jpeg']}
+          fill
+        />
+<div className="relative z-10 w-full flex justify-center sm:justify-start">
+          <div className="bg-white/85 backdrop-blur-md border border-white/30 p-5 sm:p-6 md:p-8 lg:p-10 rounded-[20px] sm:rounded-[24px] md:rounded-[32px] max-w-[90%] sm:max-w-[85%] md:max-w-[650px] shadow-[0_8px_30px_rgb(0,0,0,0.12)] text-left">
+            <h1 className="text-[1.4rem] sm:text-[1.8rem] md:text-[2.5rem] lg:text-[3.2rem] leading-[1.1] text-brand-text-main mb-3 sm:mb-4 font-medium tracking-tight">
+              The Radiant Sanctuary for Healing
+            </h1>
+            <p className="text-brand-text-muted text-[0.9rem] sm:text-[1rem] md:text-[1.1rem] leading-relaxed mb-5 sm:mb-6 md:mb-8 font-normal">
+              Welcome to Lathamw Gateway, a comprehensive healthcare facility
+              designed to restore and rejuvenate in a space that feels like home.
+            </p>
+            <div className="flex flex-wrap gap-2 sm:gap-3">
+              <Link to="/services" className="rounded-full px-4 py-2 sm:px-5 sm:py-2.5 text-[0.8rem] sm:text-[0.85rem] md:text-sm font-semibold cursor-pointer inline-flex items-center justify-center bg-brand-teal text-white hover:bg-brand-teal-dark transition-colors duration-200">
+                Explore Services
+              </Link>
+              <Link to="/contact" className="hidden md:inline-flex rounded-full px-4 py-2 sm:px-5 sm:py-2.5 text-[0.8rem] sm:text-[0.85rem] md:text-sm font-semibold cursor-pointer inline-flex items-center justify-center bg-white text-brand-teal shadow-[0_2px_8px_rgba(0,0,0,0.05)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-all duration-200">
+                Contact Us
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -138,37 +141,37 @@ export default function Landing() {
           <p className="text-brand-text-muted text-base leading-relaxed">{floorSubheading}</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Regular Floor Cards */}
           {floorCards.map((card) => (
             <div
               key={card.title}
-              className="bg-white rounded-3xl p-8 text-left shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:shadow-[0_10px_30px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-200"
+              className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 text-left shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:shadow-[0_10px_30px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-200"
             >
-              <div className="w-12 h-12 bg-brand-teal-light rounded-full flex items-center justify-center text-brand-teal mb-6">
-                <DynamicIcon name={card.icon} size={24} strokeWidth={2.5} />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-brand-teal-light rounded-full flex items-center justify-center text-brand-teal mb-4 sm:mb-6">
+                <DynamicIcon name={card.icon} size={20} sm:size={24} strokeWidth={2.5} />
               </div>
-              <h3 className="text-[1.3rem] font-medium mb-1.5">{card.title}</h3>
-              <div className="text-brand-teal text-[0.9rem] font-medium mb-4">{card.subtitle}</div>
-              <p className="text-brand-text-muted text-[0.9rem] leading-relaxed">{card.description}</p>
+              <h3 className="text-[1rem] sm:text-[1.2rem] sm:text-[1.3rem] font-medium mb-1">{card.title}</h3>
+              <div className="text-brand-teal text-[0.8rem] sm:text-[0.9rem] font-medium mb-3 sm:mb-4">{card.subtitle}</div>
+              <p className="text-brand-text-muted text-[0.75rem] sm:text-[0.85rem] sm:text-[0.9rem] leading-relaxed">{card.description}</p>
             </div>
           ))}
 
           {/* Patient Portal Card */}
-          <div className="bg-brand-teal rounded-3xl p-8 text-left shadow-[0_4px_12px_rgba(2,99,98,0.2)] hover:shadow-[0_10px_30px_rgba(2,99,98,0.3)] hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between">
-            <div>
-              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center text-white mb-6">
-                <ShieldPlus size={24} strokeWidth={2.5} />
+          <div className="bg-brand-teal rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-8 text-left shadow-[0_4px_12px_rgba(2,99,98,0.2)] hover:shadow-[0_10px_30px_rgba(2,99,98,0.3)] hover:-translate-y-1 transition-all duration-200 flex flex-col">
+            <div className="flex-1">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-full flex items-center justify-center text-white mb-4 sm:mb-6">
+                <ShieldPlus size={20} sm:size={24} strokeWidth={2.5} />
               </div>
-              <h3 className="text-[1.3rem] font-medium mb-1.5 text-white">{portal.title}</h3>
-              <div className="text-white/70 text-[0.9rem] font-medium mb-4">{portal.subtitle}</div>
-              <p className="text-white/70 text-[0.9rem] leading-relaxed">{portal.description}</p>
+              <h3 className="text-[1rem] sm:text-[1.2rem] sm:text-[1.3rem] font-medium mb-1 text-white">{portal.title}</h3>
+              <div className="text-white/70 text-[0.8rem] sm:text-[0.9rem] font-medium mb-3 sm:mb-4">{portal.subtitle}</div>
+              <p className="text-white/70 text-[0.75rem] sm:text-[0.85rem] sm:text-[0.9rem] leading-relaxed">{portal.description}</p>
             </div>
             <Link
               to={portal.buttonHref}
-              className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-[0.85rem] font-semibold text-brand-teal hover:bg-white/90 transition-colors w-max"
+              className="mt-5 sm:mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-white px-4 sm:px-5 py-2 sm:py-2.5 text-[0.8rem] sm:text-[0.85rem] font-semibold text-brand-teal hover:bg-white/90 transition-colors w-full"
             >
-              {portal.buttonLabel} <ChevronRight size={15} />
+              {portal.buttonLabel} <ChevronRight size={21} sm:size={21} />
             </Link>
           </div>
         </div>
@@ -189,22 +192,22 @@ export default function Landing() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-4 gap-5">
           {serviceCards.map((card) => (
             <div
               key={card.title}
-              className="bg-white rounded-[20px] p-6 shadow-sm flex flex-col items-start text-left"
+              className="bg-white rounded-[14px] sm:rounded-[20px] p-4 sm:p-5 sm:p-6 shadow-sm flex flex-col items-start text-left"
             >
-              <div className="w-8 h-8 mb-4 text-brand-text-main flex items-start justify-start">
-                <DynamicIcon name={card.icon} size={20} strokeWidth={2} />
+              <div className="w-7 sm:w-8 h-7 sm:h-8 mb-3 sm:mb-4 text-brand-text-main flex items-start justify-start">
+                <DynamicIcon name={card.icon} size={16} sm:size={20} strokeWidth={2} />
               </div>
-              <h3 className="text-[1.1rem] font-medium mb-3 text-brand-text-main w-full">{card.title}</h3>
-              <p className="text-brand-text-muted text-[0.85rem] leading-relaxed mb-6 flex-1 w-full">{card.description}</p>
+              <h3 className="text-[0.9rem] sm:text-[1rem] md:text-[1.1rem] font-medium mb-2 sm:mb-3 text-brand-text-main w-full">{card.title}</h3>
+              <p className="text-brand-text-muted text-[0.7rem] sm:text-[0.8rem] md:text-[0.85rem] leading-relaxed mb-4 sm:mb-6 flex-1 w-full">{card.description}</p>
               <Link
                 to={card.learnMoreHref}
-                className="text-brand-teal text-[0.85rem] font-semibold flex items-center gap-1 hover:underline w-full"
+                className="text-brand-teal text-[0.75rem] sm:text-[0.8rem] sm:text-[0.85rem] font-semibold flex items-center gap-1 hover:underline w-full"
               >
-                {card.learnMoreLabel} <ChevronRight size={14} />
+                {card.learnMoreLabel} <ChevronRight size={12} sm:size={13} sm:size={14} />
               </Link>
             </div>
           ))}

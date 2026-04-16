@@ -5,17 +5,20 @@ import {
   MapPin, Sparkles, Building2, Stethoscope, Key,
 } from 'lucide-react';
 import { client, urlFor } from '../sanityClient';
+import { BlurImage } from '../components/BlurImage';
+import { LOCAL_BLURHASH } from '../imagePlaceholders';
 
 const FLOORS_QUERY = `*[_type == "floorBreakdownPage"][0]{
   hero{
     badge, headingLine1, headingLine2, subtext,
     backgroundImage,
+    "bgLqip": backgroundImage.asset->metadata.lqip,
     ctas{ primaryLabel, primaryHref, secondaryLabel, secondaryHref }
   },
   statsBar[]{ value, label },
   facilityDirectory{
     badge, headingLine1, headingLine2, description,
-    floors[]{ tabLabel, floorCode, title, description, image, tags, activeLabel }
+    floors[]{ tabLabel, floorCode, title, description, image, "imageLqip": image.asset->metadata.lqip, tags, activeLabel }
   },
   architecture{
     badge, headingLine1, headingLine2, description,
@@ -127,7 +130,7 @@ export default function FloorBreakdown() {
         if (result.hero?.backgroundImage)
           urls.push(urlFor(result.hero.backgroundImage).width(1920).url());
 
-        result.facilityDirectory?.floors?.forEach((floor, i) => {
+        result.facilityDirectory?.floors?.forEach((floor) => {
           if (floor.image)
             urls.push(urlFor(floor.image).width(1400).url());
         });
@@ -158,9 +161,11 @@ export default function FloorBreakdown() {
   const arch      = data.architecture      || {};
   const features  = arch.features          || [];
 
-  const heroBg = hero.backgroundImage
+  const heroBgSrc = hero.backgroundImage
     ? urlFor(hero.backgroundImage).width(1920).url()
     : '/images/IMG_4829.jpeg';
+  const heroBgHash = hero.backgroundImage ? undefined : LOCAL_BLURHASH['/images/IMG_4829.jpeg'];
+  const heroBgLqip = hero.bgLqip || undefined;
 
   const current = floors[activeFloor];
 
@@ -168,45 +173,49 @@ export default function FloorBreakdown() {
     <div className="min-h-screen font-inter text-brand-text-main">
 
       {/* ── HERO ─────────────────────────────────────────────────────── */}
-      <section
-        className="relative min-h-screen flex items-end pl-5 md:pl-10 pr-[5%] pb-10 overflow-hidden bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url('${heroBg}')` }}
-      >
+      <section className="relative min-h-screen flex items-end pl-5 md:pl-10 pr-[5%] pb-10 overflow-hidden">
+        <BlurImage
+          src={heroBgSrc}
+          hash={heroBgHash}
+          lqip={heroBgLqip}
+          fill
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent" />
 
-        {/* Badge */}
-        <div className="absolute top-28 left-6 md:left-10 z-10">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-sm">
+        {/* Content card + badge wrapper */}
+        <div className="relative z-10 flex flex-col items-start max-w-[90%] sm:max-w-[85%] md:max-w-[640px]">
+          {/* Badge — floats just above the card */}
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-sm mb-3">
             <MapPin size={10} strokeWidth={2.5} />
             {hero.badge || 'Floor Breakdown'}
           </div>
-        </div>
 
-        {/* Content card */}
-        <div className="relative z-10 max-w-[640px] bg-white/10 backdrop-blur-md border border-white/20 rounded-[28px] p-8 lg:p-10 shadow-[0_20px_60px_rgba(0,0,0,0.25)]">
-          <h1 className="text-[2.8rem] md:text-[3.8rem] font-medium leading-[1.02] tracking-tight text-white mb-4">
+          {/* Content card */}
+          <div className="w-full bg-white/45 backdrop-blur-md border border-white/30 rounded-[20px] sm:rounded-[24px] md:rounded-[28px] p-5 sm:p-6 md:p-8 lg:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
+          <h1 className="text-[1.4rem] sm:text-[1.8rem] md:text-[2.8rem] lg:text-[3.8rem] font-medium leading-[1.02] tracking-tight text-white mb-3 sm:mb-4">
             {hero.headingLine1 || 'Healing in'}
             <span className="block text-teal-300 italic">{hero.headingLine2 || 'Harmony.'}</span>
           </h1>
-          <p className="text-white/75 text-[1rem] leading-7 mb-8 max-w-[480px]">
+          <p className="text-white/75 text-[0.9rem] sm:text-[1rem] md:text-[1rem] leading-6 sm:leading-7 mb-5 sm:mb-6 md:mb-8 max-w-[480px]">
             {hero.subtext || 'Three purposefully designed floors — two dedicated to clinical excellence, one offering premium practitioner suites.'}
           </p>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-2 sm:gap-3">
             <Link
               to={hero?.ctas?.primaryHref || '/services'}
-              className="inline-flex items-center gap-2 rounded-full bg-brand-teal px-6 py-2.5 text-sm font-semibold text-white hover:bg-brand-teal-dark transition-colors"
+              className="rounded-full px-4 py-2 sm:px-5 md:px-6 py-2.5 text-[0.8rem] sm:text-[0.85rem] md:text-sm font-semibold cursor-pointer inline-flex items-center justify-center bg-brand-teal text-white hover:bg-brand-teal-dark transition-colors duration-200"
             >
               {hero?.ctas?.primaryLabel || 'View All Services'} <ArrowRight size={14} />
             </Link>
             <Link
               to={hero?.ctas?.secondaryHref || '/contact'}
-              className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 px-6 py-2.5 text-sm font-semibold text-white hover:bg-white/20 transition-colors"
+              className="hidden md:inline-flex rounded-full px-4 py-2 sm:px-5 md:px-6 py-2.5 text-[0.8rem] sm:text-[0.85rem] md:text-sm font-semibold cursor-pointer inline-flex items-center justify-center border border-white/40 bg-white/10 text-white hover:bg-white/20 transition-colors"
             >
               {hero?.ctas?.secondaryLabel || 'Book a Tour'}
             </Link>
           </div>
-        </div>
+          </div>{/* end card */}
+        </div>{/* end badge+card wrapper */}
       </section>
 
       {/* ── STATS ────────────────────────────────────────────────────── */}
@@ -226,11 +235,11 @@ export default function FloorBreakdown() {
       )}
 
       {/* ── FACILITY DIRECTORY ───────────────────────────────────────── */}
-      <section className="bg-gradient-to-b from-[#f0f4f4] via-[#e8f0f0] to-white py-24 px-5 md:px-8">
+      <section className="bg-gradient-to-b from-[#f0f4f4] via-[#e8f0f0] to-white py-8 md:py-12 lg:py-20 px-5 md:px-8">
         <div className="mx-auto max-w-[1220px]">
 
           {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 sm:gap-6 mb-8 sm:mb-10 md:mb-14">
             <div>
               {directory.badge && (
                 <div className="mb-4 inline-flex items-center rounded-full border border-[#d8ebe6] bg-white px-4 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-brand-teal shadow-sm">
@@ -284,11 +293,13 @@ export default function FloorBreakdown() {
 
               {/* Image side */}
               <div className="relative overflow-hidden rounded-[28px] min-h-[440px] shadow-[0_20px_50px_rgba(17,75,83,0.12)]">
-                <img
+                <BlurImage
                   key={activeFloor}
                   src={getFloorImage(current.image, activeFloor)}
                   alt={current.title}
-                  className="absolute inset-0 h-full w-full object-cover"
+                  lqip={current.imageLqip}
+                  hash={current.image ? undefined : LOCAL_BLURHASH[LOCAL_IMAGES[activeFloor % LOCAL_IMAGES.length]]}
+                  fill
                 />
                 {/* Gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
@@ -396,7 +407,7 @@ export default function FloorBreakdown() {
       </section>
 
       {/* ── ARCHITECTURE ─────────────────────────────────────────────── */}
-      <section className="py-24 px-5 md:px-8 bg-white">
+      <section className="py-8 md:py-12 lg:py-20 px-5 md:px-8 bg-white">
         <div className="mx-auto max-w-[1220px]">
 
           {/* Split: text left, image right */}
@@ -431,14 +442,14 @@ export default function FloorBreakdown() {
 
             {/* Stacked images */}
             <div className="grid grid-cols-2 grid-rows-2 gap-3 h-[520px]">
-              <div className="col-span-2 overflow-hidden rounded-[22px]">
-                <img src="/images/commerce.jpeg" alt="Facility" className="h-full w-full object-cover hover:scale-[1.03] transition-transform duration-500" />
+              <div className="col-span-2 relative overflow-hidden rounded-[22px]">
+                <BlurImage src="/images/commerce.jpeg" hash={LOCAL_BLURHASH['/images/commerce.jpeg']} fill imgClassName="hover:scale-[1.03] transition-transform duration-500" />
               </div>
-              <div className="overflow-hidden rounded-[22px]">
-                <img src="/images/IMG_4824.jpeg" alt="Interior" className="h-full w-full object-cover hover:scale-[1.03] transition-transform duration-500" />
+              <div className="relative overflow-hidden rounded-[22px]">
+                <BlurImage src="/images/IMG_4824.jpeg" hash={LOCAL_BLURHASH['/images/IMG_4824.jpeg']} fill imgClassName="hover:scale-[1.03] transition-transform duration-500" />
               </div>
-              <div className="overflow-hidden rounded-[22px]">
-                <img src="/images/IMG_4827.jpeg" alt="Exterior" className="h-full w-full object-cover hover:scale-[1.03] transition-transform duration-500" />
+              <div className="relative overflow-hidden rounded-[22px]">
+                <BlurImage src="/images/IMG_4827.jpeg" hash={LOCAL_BLURHASH['/images/IMG_4827.jpeg']} fill imgClassName="hover:scale-[1.03] transition-transform duration-500" />
               </div>
             </div>
           </div>
@@ -446,10 +457,10 @@ export default function FloorBreakdown() {
           {/* CTA Banner — image background */}
           {arch.ctaBox && (
             <div className="relative overflow-hidden rounded-[32px] min-h-[260px] flex items-center">
-              <img
+              <BlurImage
                 src="/images/IMG_4822.jpeg"
-                alt=""
-                className="absolute inset-0 h-full w-full object-cover"
+                hash={LOCAL_BLURHASH['/images/IMG_4822.jpeg']}
+                fill
               />
               <div className="absolute inset-0 bg-gradient-to-r from-brand-teal/95 via-brand-teal/80 to-brand-teal/40" />
 
@@ -487,7 +498,7 @@ export default function FloorBreakdown() {
       </section>
 
       {/* ── GALLERY ──────────────────────────────────────────────────── */}
-      <section className="py-20 px-5 md:px-8 bg-[#f8fbfb]">
+      <section className="py-8 md:py-12 lg:py-16 px-5 md:px-8 bg-[#f8fbfb]">
         <div className="mx-auto max-w-[1220px]">
           <div className="mb-8 flex items-end justify-between">
             <h3 className="text-[1.6rem] font-medium tracking-tight text-brand-text-main">
@@ -499,39 +510,39 @@ export default function FloorBreakdown() {
           </div>
 
           {/* Asymmetric masonry grid */}
-          <div className="grid grid-cols-12 grid-rows-2 gap-3 h-[420px]">
-            {/* Large left */}
-            <div className="col-span-5 row-span-2 overflow-hidden rounded-[22px] relative group">
-              <img src="/images/IMG_4829.jpeg" alt="Facility exterior" className="h-full w-full object-cover group-hover:scale-[1.04] transition-transform duration-500" />
-              <div className="absolute bottom-4 left-4 rounded-[14px] bg-white/85 backdrop-blur-sm px-4 py-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 lg:grid-rows-2 gap-3 sm:gap-4">
+            {/* Large left - spans full width on mobile, 5 cols on lg */}
+            <div className="sm:col-span-2 lg:col-span-5 lg:row-span-2 overflow-hidden rounded-[22px] relative group aspect-[4/3] sm:aspect-auto sm:h-[200px] lg:h-auto">
+              <BlurImage src="/images/IMG_4829.jpeg" hash={LOCAL_BLURHASH['/images/IMG_4829.jpeg']} fill imgClassName="group-hover:scale-[1.04] transition-transform duration-500" />
+              <div className="absolute bottom-4 left-4 z-10 rounded-[14px] bg-white/85 backdrop-blur-sm px-4 py-2.5">
                 <div className="text-[0.72rem] font-bold uppercase tracking-widest text-[#6b7280]">Main Entrance</div>
               </div>
             </div>
-            {/* Top middle */}
-            <div className="col-span-4 row-span-1 overflow-hidden rounded-[22px] relative group">
-              <img src="/images/IMG_4822.jpeg" alt="Building view" className="h-full w-full object-cover group-hover:scale-[1.04] transition-transform duration-500" />
-              <div className="absolute bottom-3 left-3 rounded-[12px] bg-white/85 backdrop-blur-sm px-3 py-1.5">
+            {/* Top middle - 4 cols on lg */}
+            <div className="lg:col-span-4 overflow-hidden rounded-[22px] relative group aspect-[4/3] sm:h-[150px] lg:aspect-auto">
+              <BlurImage src="/images/IMG_4822.jpeg" hash={LOCAL_BLURHASH['/images/IMG_4822.jpeg']} fill imgClassName="group-hover:scale-[1.04] transition-transform duration-500" />
+              <div className="absolute bottom-3 left-3 z-10 rounded-[12px] bg-white/85 backdrop-blur-sm px-3 py-1.5">
                 <div className="text-[0.68rem] font-bold uppercase tracking-widest text-[#6b7280]">Medical Hub</div>
               </div>
             </div>
-            {/* Top right */}
-            <div className="col-span-3 row-span-1 overflow-hidden rounded-[22px] relative group">
-              <img src="/images/IMG_4824.jpeg" alt="Interior" className="h-full w-full object-cover group-hover:scale-[1.04] transition-transform duration-500" />
-              <div className="absolute bottom-3 left-3 rounded-[12px] bg-white/85 backdrop-blur-sm px-3 py-1.5">
+            {/* Top right - 3 cols on lg */}
+            <div className="lg:col-span-3 overflow-hidden rounded-[22px] relative group aspect-[4/3] sm:h-[150px] lg:aspect-auto">
+              <BlurImage src="/images/IMG_4824.jpeg" hash={LOCAL_BLURHASH['/images/IMG_4824.jpeg']} fill imgClassName="group-hover:scale-[1.04] transition-transform duration-500" />
+              <div className="absolute bottom-3 left-3 z-10 rounded-[12px] bg-white/85 backdrop-blur-sm px-3 py-1.5">
                 <div className="text-[0.68rem] font-bold uppercase tracking-widest text-[#6b7280]">Wellness Floor</div>
               </div>
             </div>
-            {/* Bottom middle */}
-            <div className="col-span-3 row-span-1 overflow-hidden rounded-[22px] relative group">
-              <img src="/images/IMG_4827.jpeg" alt="Grounds" className="h-full w-full object-cover group-hover:scale-[1.04] transition-transform duration-500" />
-              <div className="absolute bottom-3 left-3 rounded-[12px] bg-white/85 backdrop-blur-sm px-3 py-1.5">
+            {/* Bottom middle - 3 cols on lg */}
+            <div className="lg:col-span-3 overflow-hidden rounded-[22px] relative group aspect-[4/3] sm:h-[150px] lg:aspect-auto">
+              <BlurImage src="/images/IMG_4827.jpeg" hash={LOCAL_BLURHASH['/images/IMG_4827.jpeg']} fill imgClassName="group-hover:scale-[1.04] transition-transform duration-500" />
+              <div className="absolute bottom-3 left-3 z-10 rounded-[12px] bg-white/85 backdrop-blur-sm px-3 py-1.5">
                 <div className="text-[0.68rem] font-bold uppercase tracking-widest text-[#6b7280]">Grounds</div>
               </div>
             </div>
-            {/* Bottom right */}
-            <div className="col-span-4 row-span-1 overflow-hidden rounded-[22px] relative group">
-              <img src="/images/IMG_4823.jpeg" alt="Rental suites" className="h-full w-full object-cover group-hover:scale-[1.04] transition-transform duration-500" />
-              <div className="absolute bottom-3 left-3 rounded-[12px] bg-white/85 backdrop-blur-sm px-3 py-1.5">
+            {/* Bottom right - 4 cols on lg */}
+            <div className="lg:col-span-4 overflow-hidden rounded-[22px] relative group aspect-[4/3] sm:h-[150px] lg:aspect-auto">
+              <BlurImage src="/images/IMG_4823.jpeg" hash={LOCAL_BLURHASH['/images/IMG_4823.jpeg']} fill imgClassName="group-hover:scale-[1.04] transition-transform duration-500" />
+              <div className="absolute bottom-3 left-3 z-10 rounded-[12px] bg-white/85 backdrop-blur-sm px-3 py-1.5">
                 <div className="text-[0.68rem] font-bold uppercase tracking-widest text-[#6b7280]">Rental Suites</div>
               </div>
             </div>
