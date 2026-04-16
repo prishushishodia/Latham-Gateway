@@ -12,7 +12,7 @@ const FOOTER_QUERY = `*[_type == "footerSection"][0]{
 // ─── Fallback (renders instantly — no flash) ──────────────────────────────────
 const FALLBACK = {
   cta: {
-    heading:      'Rent Space at Lathamw Gateway',
+    heading:      'Rent Space at Lathum Gateway',
     subtext:      'Join our collaborative healthcare community. Premium, adaptable spaces on the top floor are available for specialized practitioners looking to grow their practice.',
     inquireLabel: 'Inquire About Space',
     inquireHref:  '/rentals#inquiry',
@@ -25,7 +25,7 @@ const FALLBACK = {
     { label: 'Our Floors',   href: '/floor-breakdown'   },
     { label: 'Contact',      href: '/contact'           },
   ],
-  copyrightText: '© 2026 Lathamw Gateway. All Rights Reserved.',
+  copyrightText: '© 2026 Lathum Gateway. All Rights Reserved.',
 };
 
 export default function Footer() {
@@ -85,7 +85,7 @@ export default function Footer() {
           {/* CTA block */}
           <div className="mb-16">
             <div className="text-white">
-              <h2 className="text-[2.4rem] md:text-[3rem] font-medium mb-4 leading-tight whitespace-nowrap">
+              <h2 className="text-[1.4rem] sm:text-[1.8rem] md:text-[2.4rem] lg:text-[3rem] font-medium mb-4 leading-tight">
                 {cta.heading}
               </h2>
               <p className="text-white/70 text-[1.05rem] leading-relaxed mb-8 font-light max-w-[560px]">

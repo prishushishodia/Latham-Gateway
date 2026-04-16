@@ -63,7 +63,7 @@ const FALLBACK_DATA = {
     badge: 'Facility Directory',
     headingLine1: 'Every floor,',
     headingLine2: 'a purpose.',
-    description: 'From primary care to premium rental suites, each level of Lathamw Gateway is designed with intention.',
+    description: 'From primary care to premium rental suites, each level of Lathum Gateway is designed with intention.',
     floors: [
       {
         tabLabel: 'Medical Hub',
@@ -106,7 +106,7 @@ const FALLBACK_DATA = {
     ],
     ctaBox: {
       heading: 'Ready to experience it in person?',
-      subtext: 'Schedule a tour and see how Lathamw Gateway can elevate your practice or care experience.',
+      subtext: 'Schedule a tour and see how Lathum Gateway can elevate your practice or care experience.',
       primaryLabel: 'Book Appointment',
       secondaryLabel: 'Schedule a Tour',
     },
@@ -502,7 +502,7 @@ export default function FloorBreakdown() {
         <div className="mx-auto max-w-[1220px]">
           <div className="mb-8 flex items-end justify-between">
             <h3 className="text-[1.6rem] font-medium tracking-tight text-brand-text-main">
-              Inside <span className="text-brand-teal">Lathamw Gateway</span>
+              Inside <span className="text-brand-teal">Lathum Gateway</span>
             </h3>
             <Link to="/contact" className="text-[0.85rem] font-semibold text-brand-teal hover:underline flex items-center gap-1">
               Book a tour <ArrowRight size={13} />

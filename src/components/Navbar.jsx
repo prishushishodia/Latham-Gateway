@@ -11,12 +11,22 @@ export default function Navbar() {
     { label: 'Services', href: '/services' },
   ];
 
+  const extraMobileItems = [
+    { label: 'Available for Rent', href: '/rentals' },
+    { label: 'Patient Portal', href: '/patient' },
+    { label: 'Contact Us', href: '/contact' },
+  ];
+
   return (
     <div className="absolute top-5 left-0 right-0 z-[100] flex justify-center px-5 pointer-events-none">
-      <nav className="flex justify-between items-center w-full max-w-[1100px] bg-white/60 backdrop-blur-md border border-white/30 px-4 md:px-6 py-3 rounded-full shadow-sm pointer-events-auto gap-3 md:gap-4">
+      <nav className="flex justify-between items-center w-full max-w-[1100px] bg-white/60 backdrop-blur-md border border-white/30 px-3 sm:px-4 md:px-6 py-2.5 sm:py-3 rounded-full shadow-sm pointer-events-auto gap-2 sm:gap-3 md:gap-4">
         <Link to="/" className="flex items-center gap-2 font-semibold text-brand-teal text-[1.1rem]">
           <ShieldPlus size={24} className="fill-brand-teal text-brand-teal" />
-          <span className="hidden sm:inline">Lathamw Gateway</span>
+          <span className="hidden sm:inline">Lathum Gateway</span>
+        </Link>
+
+        <Link to="/" className="absolute left-1/2 -translate-x-1/2 sm:hidden font-semibold text-brand-teal text-[0.9rem] pointer-events-none">
+          Lathum Gateway
         </Link>
 
         <div className="flex flex-1 justify-center md:flex-none">
@@ -32,15 +42,18 @@ export default function Navbar() {
             activeTextColor="#114b53"
             hoverPillColor="#114b53"
             mobileMenuColor="rgba(255, 255, 255, 0.96)"
+            extraMobileItems={extraMobileItems}
           />
         </div>
 
-        <Link
-          to="/rentals"
-          className="hidden md:inline-flex rounded-full px-6 py-2.5 text-sm font-semibold cursor-pointer items-center justify-center gap-2 bg-brand-teal text-white hover:bg-brand-teal-dark transition-colors duration-200 whitespace-nowrap"
-        >
-          Available for Rent
-        </Link>
+        <div className="flex items-center">
+          <Link
+            to="/rentals"
+            className="hidden md:inline-flex rounded-full px-6 py-2.5 text-sm font-semibold cursor-pointer items-center justify-center gap-2 bg-brand-teal text-white hover:bg-brand-teal-dark transition-colors duration-200 whitespace-nowrap"
+          >
+            Available for Rent
+          </Link>
+        </div>
       </nav>
     </div>
   );

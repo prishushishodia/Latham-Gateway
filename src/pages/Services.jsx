@@ -85,12 +85,12 @@ const FALLBACK_HERO = {
   badge: 'Complete Care Services',
   headingLine1: 'Comprehensive',
   headingLine2: 'Wellness Center',
-  subtext: 'Experience a new standard of healthcare. At Lathamw Gateway, we blend advanced clinical expertise with a serene, patient-first environment to support your complete well-being.',
+  subtext: 'Experience a new standard of healthcare. At Lathum Gateway, we blend advanced clinical expertise with a serene, patient-first environment to support your complete well-being.',
 };
 
 const FALLBACK_CTA = {
   heading: 'Ready to prioritize your health?',
-  subtext: 'Schedule an appointment today and experience the Lathamw Gateway difference through thoughtful care, elevated service, and a calm, welcoming environment.',
+  subtext: 'Schedule an appointment today and experience the Lathum Gateway difference through thoughtful care, elevated service, and a calm, welcoming environment.',
   primaryLabel: 'Book Appointment',
   primaryHref: '/contact',
   secondaryLabel: 'Contact Us',
@@ -117,8 +117,8 @@ function ServiceCard({ title, description, cta, icon, image, index, featured = f
 
   return (
     <article
-      className={`group relative flex overflow-hidden rounded-[28px] border border-[#e8e2dc] bg-white shadow-[0_10px_30px_rgba(17,75,83,0.04)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(17,75,83,0.12)] ${
-        featured ? 'md:min-h-[22.75rem]' : 'min-h-[200px]'
+      className={`group relative flex overflow-hidden rounded-[20px] border border-[#e8e2dc] bg-white shadow-[0_10px_30px_rgba(17,75,83,0.04)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(17,75,83,0.12)] ${
+        featured ? 'md:min-h-[22.75rem] min-h-[160px]' : 'min-h-[160px]'
       }`}
     >
       <div
@@ -127,23 +127,23 @@ function ServiceCard({ title, description, cta, icon, image, index, featured = f
         }`}
       >
         {/* Content */}
-        <div className="flex flex-1 flex-col justify-center p-6 transition-all duration-[420ms] md:p-7" style={{ minWidth: 0 }}>
-          <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#e8f2f0] text-brand-teal">
+        <div className="flex flex-1 flex-col justify-center p-3.5 sm:p-4 md:p-6 transition-all duration-[420ms]" style={{ minWidth: 0 }}>
+          <div className="mb-3 sm:mb-4 flex h-9 sm:h-10 w-9 sm:w-10 items-center justify-center rounded-xl bg-[#e8f2f0] text-brand-teal">
             <DynamicIcon name={icon} />
           </div>
           <h3
-            className={`mb-3 font-medium tracking-[-0.03em] text-brand-text-main ${
-              featured ? 'text-[1.65rem]' : 'text-[1.45rem]'
+            className={`mb-2 sm:mb-3 font-medium tracking-[-0.03em] text-brand-text-main ${
+              featured ? 'text-[1rem] sm:text-[1.3rem] md:text-[1.65rem]' : 'text-[0.95rem] sm:text-[1.1rem] md:text-[1.45rem]'
             }`}
           >
             {title}
           </h3>
-          <p className="mb-7 text-[0.98rem] leading-7 text-[#667085]">{description}</p>
+          <p className="mb-4 sm:mb-5 text-[0.75rem] sm:text-[0.85rem] md:text-[0.98rem] leading-5 sm:leading-6 md:leading-7 text-[#667085] line-clamp-2 md:line-clamp-none">{description}</p>
           <Link
             to="/floor-breakdown"
-            className="inline-flex items-center gap-2 text-[0.9rem] font-semibold text-brand-teal transition-all duration-200 group-hover:gap-3 hover:opacity-75"
+            className="inline-flex items-center gap-1.5 text-[0.75rem] sm:text-[0.85rem] md:text-[0.9rem] font-semibold text-brand-teal transition-all duration-200 group-hover:gap-2 hover:opacity-75"
           >
-            {cta} <ArrowRight size={15} />
+            {cta} <ArrowRight size={12} sm:size={14} md:size={15} />
           </Link>
         </div>
 
@@ -153,7 +153,7 @@ function ServiceCard({ title, description, cta, icon, image, index, featured = f
             src={image}
             alt={title}
             className="h-full w-full object-cover opacity-0 scale-105 transition-all duration-[450ms] ease-[cubic-bezier(0.4,0,0.2,1)] delay-100 group-hover:opacity-100 group-hover:scale-100"
-            style={{ minWidth: '180px' }}
+            style={{ minWidth: '120px' }}
           />
         </div>
       </div>
@@ -197,7 +197,7 @@ export default function Services() {
           </div>
 
           {/* Service cards grid */}
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-x-8 md:gap-y-6">
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-2 md:gap-x-8 md:gap-y-6">
             {cards.map((card, index) => (
               <ServiceCard
                 key={card.title}

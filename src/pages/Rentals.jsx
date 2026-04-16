@@ -55,7 +55,7 @@ const FALLBACK = {
     badge: 'Second Floor Leasing',
     headingLine1: 'The Future of',
     headingLine2: 'Clinical Space',
-    subtext: "Lathamw Gateway\u2019s premium second-floor suites offer a calm, design-forward setting for modern medical excellence. Elevate your practice in a space shaped for patient comfort and professional growth.",
+    subtext: "Lathum Gateway\u2019s premium second-floor suites offer a calm, design-forward setting for modern medical excellence. Elevate your practice in a space shaped for patient comfort and professional growth.",
     image: null,
     availableArea: '2,400 \u2013 8,500 SQFT',
     status: 'Now Leasing',
@@ -79,7 +79,7 @@ const FALLBACK = {
   locationSection: {
     badge: 'Prime District',
     heading: 'Strategic Location',
-    subtext: 'Located in the heart of a growing medical corridor, Lathamw Gateway offers direct access to established providers, transit convenience, and a patient-friendly setting for modern care.',
+    subtext: 'Located in the heart of a growing medical corridor, Lathum Gateway offers direct access to established providers, transit convenience, and a patient-friendly setting for modern care.',
     image: null,
     locationPoints: [
       '3 mins to central transit access',
