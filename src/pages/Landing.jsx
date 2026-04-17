@@ -4,7 +4,7 @@ import {
   Stethoscope, Leaf, ArrowRight, ChevronRight,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { client } from '../sanityClient';
+import { client, urlFor } from '../sanityClient';
 import { BlurImage } from '../components/BlurImage';
 import { LOCAL_BLURHASH } from '../imagePlaceholders';
 
@@ -26,6 +26,11 @@ function DynamicIcon({ name, size = 24, strokeWidth = 2.5 }) {
 }
 
 const LANDING_QUERY = `*[_type == "landingPage"][0]{
+  hero{
+    heading, subtext,
+    backgroundImage, "bgLqip": backgroundImage.asset->metadata.lqip,
+    primaryLabel, primaryHref, secondaryLabel, secondaryHref
+  },
   floorSection{
     heading,
     subheading,
@@ -65,6 +70,7 @@ export default function Landing() {
     client.fetch(LANDING_QUERY).then(setData).catch(console.error);
   }, []);
 
+  const hero = data?.hero || {};
   const floorSection = data?.floorSection;
   const servicesSection = data?.servicesSection;
 
@@ -106,25 +112,25 @@ export default function Landing() {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-end pl-4 md:pl-8 pr-[5%] pb-9 overflow-hidden mb-20">
         <BlurImage
-          src="/images/IMG_4822.jpeg"
-          hash={LOCAL_BLURHASH['/images/IMG_4822.jpeg']}
+          src={hero.backgroundImage ? urlFor(hero.backgroundImage).width(1920).url() : '/images/IMG_4822.jpeg'}
+          lqip={hero.bgLqip}
+          hash={hero.backgroundImage ? undefined : LOCAL_BLURHASH['/images/IMG_4822.jpeg']}
           fill
         />
-<div className="relative z-10 w-full flex justify-center sm:justify-start">
+        <div className="relative z-10 w-full flex justify-center sm:justify-start">
           <div className="bg-white/85 backdrop-blur-md border border-white/30 p-5 sm:p-6 md:p-8 lg:p-10 rounded-[20px] sm:rounded-[24px] md:rounded-[32px] max-w-[90%] sm:max-w-[85%] md:max-w-[650px] shadow-[0_8px_30px_rgb(0,0,0,0.12)] text-left">
             <h1 className="text-[1.4rem] sm:text-[1.8rem] md:text-[2.5rem] lg:text-[3.2rem] leading-[1.1] text-brand-text-main mb-3 sm:mb-4 font-medium tracking-tight">
-              The Radiant Sanctuary for Healing
+              {hero.heading || 'The Radiant Sanctuary for Healing'}
             </h1>
             <p className="text-brand-text-muted text-[0.9rem] sm:text-[1rem] md:text-[1.1rem] leading-relaxed mb-5 sm:mb-6 md:mb-8 font-normal">
-              Welcome to Lathum Gateway, a comprehensive healthcare facility
-              designed to restore and rejuvenate in a space that feels like home.
+              {hero.subtext || 'Welcome to Lathum Gateway, a comprehensive healthcare facility designed to restore and rejuvenate in a space that feels like home.'}
             </p>
             <div className="flex flex-wrap gap-2 sm:gap-3">
-              <Link to="/services" className="rounded-full px-4 py-2 sm:px-5 sm:py-2.5 text-[0.8rem] sm:text-[0.85rem] md:text-sm font-semibold cursor-pointer inline-flex items-center justify-center bg-brand-teal text-white hover:bg-brand-teal-dark transition-colors duration-200">
-                Explore Services
+              <Link to={hero.primaryHref || '/services'} className="rounded-full px-4 py-2 sm:px-5 sm:py-2.5 text-[0.8rem] sm:text-[0.85rem] md:text-sm font-semibold cursor-pointer inline-flex items-center justify-center bg-brand-teal text-white hover:bg-brand-teal-dark transition-colors duration-200">
+                {hero.primaryLabel || 'Explore Services'}
               </Link>
-              <Link to="/contact" className="hidden md:inline-flex rounded-full px-4 py-2 sm:px-5 sm:py-2.5 text-[0.8rem] sm:text-[0.85rem] md:text-sm font-semibold cursor-pointer inline-flex items-center justify-center bg-white text-brand-teal shadow-[0_2px_8px_rgba(0,0,0,0.05)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-all duration-200">
-                Contact Us
+              <Link to={hero.secondaryHref || '/contact'} className="hidden md:inline-flex rounded-full px-4 py-2 sm:px-5 sm:py-2.5 text-[0.8rem] sm:text-[0.85rem] md:text-sm font-semibold cursor-pointer inline-flex items-center justify-center bg-white text-brand-teal shadow-[0_2px_8px_rgba(0,0,0,0.05)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-all duration-200">
+                {hero.secondaryLabel || 'Contact Us'}
               </Link>
             </div>
           </div>

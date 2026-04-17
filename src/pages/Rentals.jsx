@@ -255,7 +255,7 @@ export default function Rentals() {
                   imgClassName="h-[330px] w-full"
                 />
                 <div className="absolute inset-0 z-10 bg-gradient-to-t from-brand-teal/10 via-transparent to-transparent" />
-                <div className="absolute bottom-4 left-4 right-4 rounded-[22px] border border-white/30 bg-white/75 px-5 py-4 backdrop-blur-md">
+                <div className="absolute bottom-4 left-4 right-4 z-20 rounded-[22px] border border-white/30 bg-white/75 px-5 py-4 backdrop-blur-md">
                   <div className="text-[0.92rem] font-semibold text-brand-text-main">
                     {features.virtualTourTitle}
                   </div>

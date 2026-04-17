@@ -18,13 +18,20 @@ const FLOORS_QUERY = `*[_type == "floorBreakdownPage"][0]{
   statsBar[]{ value, label },
   facilityDirectory{
     badge, headingLine1, headingLine2, description,
-    floors[]{ tabLabel, floorCode, title, description, image, "imageLqip": image.asset->metadata.lqip, tags, activeLabel }
+    floors[]{
+      tabLabel, floorCode, title, description,
+      image, "imageLqip": image.asset->metadata.lqip,
+      tags, activeLabel,
+      ctas{ primaryLabel, primaryHref, secondaryLabel, secondaryHref }
+    }
   },
   architecture{
     badge, headingLine1, headingLine2, description,
+    imageTop, "imageTopLqip": imageTop.asset->metadata.lqip,
+    imageBottom, "imageBottomLqip": imageBottom.asset->metadata.lqip,
     features[]{ title, description },
-    ctaBox{ heading, subtext, primaryLabel, secondaryLabel }
-  }
+    ctaBox{ heading, subtext, primaryLabel, primaryHref, secondaryLabel, secondaryHref }
+  },
 }`;
 
 const LOCAL_IMAGES = [
@@ -73,6 +80,7 @@ const FALLBACK_DATA = {
         image: null,
         tags: ['Primary Care', 'Urgent Care', 'Diagnostics', 'Lab Services'],
         activeLabel: 'ACTIVE',
+        ctas: { primaryLabel: 'View Services', primaryHref: '/services' },
       },
       {
         tabLabel: 'Wellness Center',
@@ -82,6 +90,7 @@ const FALLBACK_DATA = {
         image: null,
         tags: ['Specialty Clinics', 'Physical Therapy', 'Integrative Care'],
         activeLabel: 'ACTIVE',
+        ctas: { primaryLabel: 'View Services', primaryHref: '/services' },
       },
       {
         tabLabel: 'Rental Suites',
@@ -91,6 +100,7 @@ const FALLBACK_DATA = {
         image: null,
         tags: ['Private Suites', 'Shared Reception', 'High-Speed Internet', 'Parking Included'],
         activeLabel: 'FOR LEASE',
+        ctas: { primaryLabel: 'Explore Leasing', primaryHref: '/rentals' },
       },
     ],
   },
@@ -108,7 +118,9 @@ const FALLBACK_DATA = {
       heading: 'Ready to experience it in person?',
       subtext: 'Schedule a tour and see how Lathum Gateway can elevate your practice or care experience.',
       primaryLabel: 'Book Appointment',
+      primaryHref: '/contact',
       secondaryLabel: 'Schedule a Tour',
+      secondaryHref: '/contact',
     },
   },
 };
@@ -134,6 +146,11 @@ export default function FloorBreakdown() {
           if (floor.image)
             urls.push(urlFor(floor.image).width(1400).url());
         });
+
+        if (result.architecture?.imageTop)
+          urls.push(urlFor(result.architecture.imageTop).width(1400).url());
+        if (result.architecture?.imageBottom)
+          urls.push(urlFor(result.architecture.imageBottom).width(1400).url());
 
         // Preload them all before updating state — browser caches them
         // so the re-render swaps images without any visible flash
@@ -166,6 +183,13 @@ export default function FloorBreakdown() {
     : '/images/IMG_4829.jpeg';
   const heroBgHash = hero.backgroundImage ? undefined : LOCAL_BLURHASH['/images/IMG_4829.jpeg'];
   const heroBgLqip = hero.bgLqip || undefined;
+
+  const archTopSrc  = arch.imageTop    ? urlFor(arch.imageTop).width(1400).url()    : '/images/commerce.jpeg';
+  const archTopHash = arch.imageTop    ? undefined : LOCAL_BLURHASH['/images/commerce.jpeg'];
+  const archTopLqip = arch.imageTopLqip || undefined;
+  const archBotSrc  = arch.imageBottom ? urlFor(arch.imageBottom).width(1400).url() : '/images/IMG_4824.jpeg';
+  const archBotHash = arch.imageBottom ? undefined : LOCAL_BLURHASH['/images/IMG_4824.jpeg'];
+  const archBotLqip = arch.imageBottomLqip || undefined;
 
   const current = floors[activeFloor];
 
@@ -389,14 +413,14 @@ export default function FloorBreakdown() {
                 {/* CTA */}
                 <div className="mt-8 pt-7 border-t border-[#eaeaea]">
                   <Link
-                    to={current.activeLabel?.includes('LEASE') ? '/rentals' : '/services'}
+                    to={current.ctas?.primaryHref || (current.activeLabel?.includes('LEASE') ? '/rentals' : '/services')}
                     className={`inline-flex items-center gap-2 rounded-full px-6 py-3 text-[0.88rem] font-semibold transition-colors ${
                       current.activeLabel?.includes('LEASE')
                         ? 'bg-[#1a1a2e] text-white hover:bg-[#2a2a3e]'
                         : 'bg-brand-teal text-white hover:bg-brand-teal-dark'
                     }`}
                   >
-                    {current.activeLabel?.includes('LEASE') ? 'Explore Leasing' : 'View Services'}
+                    {current.ctas?.primaryLabel || (current.activeLabel?.includes('LEASE') ? 'Explore Leasing' : 'View Services')}
                     <ArrowRight size={14} />
                   </Link>
                 </div>
@@ -443,10 +467,10 @@ export default function FloorBreakdown() {
             {/* Stacked images */}
             <div className="grid grid-cols-2 grid-rows-2 gap-3 h-[520px]">
               <div className="col-span-2 relative overflow-hidden rounded-[22px]">
-                <BlurImage src="/images/commerce.jpeg" hash={LOCAL_BLURHASH['/images/commerce.jpeg']} fill imgClassName="hover:scale-[1.03] transition-transform duration-500" />
+                <BlurImage src={archTopSrc} hash={archTopHash} lqip={archTopLqip} fill imgClassName="hover:scale-[1.03] transition-transform duration-500" />
               </div>
               <div className="relative overflow-hidden rounded-[22px]">
-                <BlurImage src="/images/IMG_4824.jpeg" hash={LOCAL_BLURHASH['/images/IMG_4824.jpeg']} fill imgClassName="hover:scale-[1.03] transition-transform duration-500" />
+                <BlurImage src={archBotSrc} hash={archBotHash} lqip={archBotLqip} fill imgClassName="hover:scale-[1.03] transition-transform duration-500" />
               </div>
               <div className="relative overflow-hidden rounded-[22px]">
                 <BlurImage src="/images/IMG_4827.jpeg" hash={LOCAL_BLURHASH['/images/IMG_4827.jpeg']} fill imgClassName="hover:scale-[1.03] transition-transform duration-500" />
@@ -479,13 +503,13 @@ export default function FloorBreakdown() {
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 flex-shrink-0">
                   <Link
-                    to="/contact"
+                    to={arch.ctaBox.primaryHref || '/contact'}
                     className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-7 py-3.5 text-[0.9rem] font-semibold text-brand-teal hover:bg-white/90 transition-colors shadow-[0_4px_20px_rgba(0,0,0,0.12)]"
                   >
                     {arch.ctaBox.primaryLabel || 'Book Appointment'} <ArrowRight size={14} />
                   </Link>
                   <Link
-                    to="/contact"
+                    to={arch.ctaBox.secondaryHref || '/contact'}
                     className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-white/50 px-7 py-3.5 text-[0.9rem] font-semibold text-white hover:bg-white/15 transition-colors"
                   >
                     {arch.ctaBox.secondaryLabel || 'Schedule a Tour'}

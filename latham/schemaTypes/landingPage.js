@@ -6,6 +6,22 @@ export default {
   type: 'document',
   fields: [
 
+    // ─── HERO SECTION ─────────────────────────────────────────
+    {
+      name: 'hero',
+      title: 'Hero Section',
+      type: 'object',
+      fields: [
+        { name: 'heading', title: 'Heading', type: 'string' },
+        { name: 'subtext', title: 'Subtext', type: 'text' },
+        { name: 'backgroundImage', title: 'Background Image', type: 'image', options: { hotspot: true } },
+        { name: 'primaryLabel', title: 'Primary Button Label', type: 'string' },
+        { name: 'primaryHref', title: 'Primary Button Href', type: 'string' },
+        { name: 'secondaryLabel', title: 'Secondary Button Label', type: 'string' },
+        { name: 'secondaryHref', title: 'Secondary Button Href', type: 'string' },
+      ],
+    },
+
     // ─── FLOOR BREAKDOWN SECTION ──────────────────────────────
     {
       name: 'floorSection',
