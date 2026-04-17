@@ -32,6 +32,10 @@ const FLOORS_QUERY = `*[_type == "floorBreakdownPage"][0]{
     features[]{ title, description },
     ctaBox{ heading, subtext, primaryLabel, primaryHref, secondaryLabel, secondaryHref }
   },
+  gallery{
+    heading, headingAccent, tourLabel, tourHref,
+    photos[]{ label, image, "imageLqip": image.asset->metadata.lqip }
+  }
 }`;
 
 const LOCAL_IMAGES = [
@@ -114,6 +118,19 @@ const FALLBACK_DATA = {
       { title: 'Accessibility First', description: 'Dual elevators, ADA-compliant design, and intuitive wayfinding throughout every level.' },
       { title: 'Sustainable Materials', description: 'Energy-efficient systems, generous natural light, and refined finishes that stand the test of time.' },
     ],
+    gallery: {
+    heading: 'Inside',
+    headingAccent: 'Lathum Gateway',
+    tourLabel: 'Book a tour',
+    tourHref: '/contact',
+    photos: [
+      { label: 'Main Entrance', image: null },
+      { label: 'Medical Hub',   image: null },
+      { label: 'Wellness Floor', image: null },
+      { label: 'Grounds',       image: null },
+      { label: 'Rental Suites', image: null },
+    ],
+  },
     ctaBox: {
       heading: 'Ready to experience it in person?',
       subtext: 'Schedule a tour and see how Lathum Gateway can elevate your practice or care experience.',
@@ -177,6 +194,7 @@ export default function FloorBreakdown() {
   const floors    = directory.floors       || [];
   const arch      = data.architecture      || {};
   const features  = arch.features          || [];
+  const gallery   = data.gallery           || {};
 
   const heroBgSrc = hero.backgroundImage
     ? urlFor(hero.backgroundImage).width(1920).url()
@@ -522,57 +540,66 @@ export default function FloorBreakdown() {
       </section>
 
       {/* ── GALLERY ──────────────────────────────────────────────────── */}
-      <section className="py-8 md:py-12 lg:py-16 px-5 md:px-8 bg-[#f8fbfb]">
-        <div className="mx-auto max-w-[1220px]">
-          <div className="mb-8 flex items-end justify-between">
-            <h3 className="text-[1.6rem] font-medium tracking-tight text-brand-text-main">
-              Inside <span className="text-brand-teal">Lathum Gateway</span>
-            </h3>
-            <Link to="/contact" className="text-[0.85rem] font-semibold text-brand-teal hover:underline flex items-center gap-1">
-              Book a tour <ArrowRight size={13} />
-            </Link>
-          </div>
+      {(() => {
+        const FALLBACK_PHOTOS = [
+          { label: 'Main Entrance',  src: '/images/IMG_4829.jpeg' },
+          { label: 'Medical Hub',    src: '/images/IMG_4822.jpeg' },
+          { label: 'Wellness Floor', src: '/images/IMG_4824.jpeg' },
+          { label: 'Grounds',        src: '/images/IMG_4827.jpeg' },
+          { label: 'Rental Suites',  src: '/images/IMG_4823.jpeg' },
+        ];
 
-          {/* Asymmetric masonry grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 lg:grid-rows-2 gap-3 sm:gap-4">
-            {/* Large left - spans full width on mobile, 5 cols on lg */}
-            <div className="sm:col-span-2 lg:col-span-5 lg:row-span-2 overflow-hidden rounded-[22px] relative group aspect-[4/3] sm:aspect-auto sm:h-[200px] lg:h-auto">
-              <BlurImage src="/images/IMG_4829.jpeg" hash={LOCAL_BLURHASH['/images/IMG_4829.jpeg']} fill imgClassName="group-hover:scale-[1.04] transition-transform duration-500" />
-              <div className="absolute bottom-4 left-4 z-10 rounded-[14px] bg-white/85 backdrop-blur-sm px-4 py-2.5">
-                <div className="text-[0.72rem] font-bold uppercase tracking-widest text-[#6b7280]">Main Entrance</div>
+        const cmsPhotos = gallery.photos || [];
+        const items = cmsPhotos.length > 0
+          ? cmsPhotos.map((p, i) => ({
+              label: p.label || '',
+              src:   p.image ? urlFor(p.image).width(1200).url() : (FALLBACK_PHOTOS[i] ? FALLBACK_PHOTOS[i].src : FALLBACK_PHOTOS[0].src),
+              lqip:  p.imageLqip || undefined,
+              hash:  p.image ? undefined : LOCAL_BLURHASH[FALLBACK_PHOTOS[i] ? FALLBACK_PHOTOS[i].src : FALLBACK_PHOTOS[0].src],
+            }))
+          : FALLBACK_PHOTOS.map(p => ({ ...p, hash: LOCAL_BLURHASH[p.src] }));
+
+        const count = items.length;
+        // First item spans 2 cols when count is odd (≥3) so rows pair up evenly
+        const firstSpan = count >= 3 && count % 2 !== 0 ? 'col-span-2 md:col-span-1' : '';
+
+        return (
+          <section className="py-8 md:py-12 lg:py-16 px-5 md:px-8 bg-[#f8fbfb]">
+            <div className="mx-auto max-w-[1220px]">
+              <div className="mb-8 flex items-end justify-between">
+                <h3 className="text-[1.6rem] font-medium tracking-tight text-brand-text-main">
+                  {gallery.heading || 'Inside'} <span className="text-brand-teal">{gallery.headingAccent || 'Lathum Gateway'}</span>
+                </h3>
+                <Link to={gallery.tourHref || '/contact'} className="text-[0.85rem] font-semibold text-brand-teal hover:underline flex items-center gap-1">
+                  {gallery.tourLabel || 'Book a tour'} <ArrowRight size={13} />
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+                {items.map((photo, i) => (
+                  <div
+                    key={i}
+                    className={`overflow-hidden rounded-[22px] relative group aspect-[4/3] ${i === 0 ? firstSpan : ''}`}
+                  >
+                    <BlurImage
+                      src={photo.src}
+                      lqip={photo.lqip}
+                      hash={photo.hash}
+                      fill
+                      imgClassName="group-hover:scale-[1.04] transition-transform duration-500"
+                    />
+                    {photo.label && (
+                      <div className="absolute bottom-3 left-3 z-10 rounded-[12px] bg-white/85 backdrop-blur-sm px-3 py-1.5">
+                        <div className="text-[0.68rem] font-bold uppercase tracking-widest text-[#6b7280]">{photo.label}</div>
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
-            {/* Top middle - 4 cols on lg */}
-            <div className="lg:col-span-4 overflow-hidden rounded-[22px] relative group aspect-[4/3] sm:h-[150px] lg:aspect-auto">
-              <BlurImage src="/images/IMG_4822.jpeg" hash={LOCAL_BLURHASH['/images/IMG_4822.jpeg']} fill imgClassName="group-hover:scale-[1.04] transition-transform duration-500" />
-              <div className="absolute bottom-3 left-3 z-10 rounded-[12px] bg-white/85 backdrop-blur-sm px-3 py-1.5">
-                <div className="text-[0.68rem] font-bold uppercase tracking-widest text-[#6b7280]">Medical Hub</div>
-              </div>
-            </div>
-            {/* Top right - 3 cols on lg */}
-            <div className="lg:col-span-3 overflow-hidden rounded-[22px] relative group aspect-[4/3] sm:h-[150px] lg:aspect-auto">
-              <BlurImage src="/images/IMG_4824.jpeg" hash={LOCAL_BLURHASH['/images/IMG_4824.jpeg']} fill imgClassName="group-hover:scale-[1.04] transition-transform duration-500" />
-              <div className="absolute bottom-3 left-3 z-10 rounded-[12px] bg-white/85 backdrop-blur-sm px-3 py-1.5">
-                <div className="text-[0.68rem] font-bold uppercase tracking-widest text-[#6b7280]">Wellness Floor</div>
-              </div>
-            </div>
-            {/* Bottom middle - 3 cols on lg */}
-            <div className="lg:col-span-3 overflow-hidden rounded-[22px] relative group aspect-[4/3] sm:h-[150px] lg:aspect-auto">
-              <BlurImage src="/images/IMG_4827.jpeg" hash={LOCAL_BLURHASH['/images/IMG_4827.jpeg']} fill imgClassName="group-hover:scale-[1.04] transition-transform duration-500" />
-              <div className="absolute bottom-3 left-3 z-10 rounded-[12px] bg-white/85 backdrop-blur-sm px-3 py-1.5">
-                <div className="text-[0.68rem] font-bold uppercase tracking-widest text-[#6b7280]">Grounds</div>
-              </div>
-            </div>
-            {/* Bottom right - 4 cols on lg */}
-            <div className="lg:col-span-4 overflow-hidden rounded-[22px] relative group aspect-[4/3] sm:h-[150px] lg:aspect-auto">
-              <BlurImage src="/images/IMG_4823.jpeg" hash={LOCAL_BLURHASH['/images/IMG_4823.jpeg']} fill imgClassName="group-hover:scale-[1.04] transition-transform duration-500" />
-              <div className="absolute bottom-3 left-3 z-10 rounded-[12px] bg-white/85 backdrop-blur-sm px-3 py-1.5">
-                <div className="text-[0.68rem] font-bold uppercase tracking-widest text-[#6b7280]">Rental Suites</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+          </section>
+        );
+      })()}
 
     </div>
   );

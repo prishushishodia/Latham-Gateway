@@ -140,5 +140,33 @@ export default {
       ],
     },
 
+    // ─── GALLERY SECTION ──────────────────────────────────────
+    {
+      name: 'gallery',
+      title: 'Gallery Section',
+      type: 'object',
+      fields: [
+        { name: 'heading', title: 'Heading', type: 'string' },       // "Inside"
+        { name: 'headingAccent', title: 'Heading Accent (Teal)', type: 'string' }, // "Lathum Gateway"
+        { name: 'tourLabel', title: 'Tour Link Label', type: 'string' },
+        { name: 'tourHref', title: 'Tour Link Href', type: 'string' },
+        {
+          name: 'photos',
+          title: 'Photos',
+          type: 'array',
+          of: [
+            {
+              type: 'object',
+              fields: [
+                { name: 'image', title: 'Image', type: 'image', options: { hotspot: true } },
+                { name: 'label', title: 'Label', type: 'string' },
+              ],
+              preview: { select: { title: 'label', media: 'image' } },
+            },
+          ],
+        },
+      ],
+    },
+
   ],
 };
