@@ -62,12 +62,6 @@ const FALLBACK = {
   },
   featuresSection: {
     heading: 'Premium Features',
-    features: [
-      { title: 'Clinical Optimization', description: 'Pre-plumbed and wired layouts designed for specialized medical equipment, private consult rooms, and efficient workflows.', icon: 'Building2' },
-      { title: 'Patient Accessibility', description: 'Dual high-speed elevators, intuitive circulation, and ADA-conscious planning that improves the daily patient experience.', icon: 'UserRoundCheck' },
-      { title: 'Sustainable Design', description: 'Energy-efficient climate control, generous daylight, and thoughtful materials that feel refined without excess.', icon: 'Trees' },
-      { title: 'Dedicated Parking', description: 'Reserved parking options for staff and validated visitor access that simplifies arrival for patients and providers.', icon: 'Car' },
-    ],
     interiorImage: null,
     virtualTourTitle: 'Virtual Tour Available',
     virtualTourDescription: 'Experience the second-floor layout through a guided walkthrough of the suites and shared spaces.',
@@ -81,11 +75,6 @@ const FALLBACK = {
     heading: 'Strategic Location',
     subtext: 'Located in the heart of a growing medical corridor, Lathum Gateway offers direct access to established providers, transit convenience, and a patient-friendly setting for modern care.',
     image: null,
-    locationPoints: [
-      '3 mins to central transit access',
-      'Adjacent to established medical services',
-      'Near healthy dining and daily conveniences',
-    ],
   },
 };
 
@@ -127,9 +116,9 @@ export default function Rentals() {
   }, []);
 
   const hero        = data?.hero            ?? FALLBACK.hero;
-  const features    = data?.featuresSection ?? FALLBACK.featuresSection;
+  const features    = data?.featuresSection || FALLBACK.featuresSection;
   const inquiry     = data?.inquirySection  ?? FALLBACK.inquirySection;
-  const location    = data?.locationSection ?? FALLBACK.locationSection;
+  const location    = data?.locationSection || FALLBACK.locationSection;
 
   const locationIcons = [MoveRight, MapPinned, Cross];
 
@@ -227,7 +216,7 @@ export default function Rentals() {
               </h2>
 
               <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-2 gap-5">
-                {(features.features ?? []).map((feature) => (
+                {(features.features || []).map((feature) => (
                   <article
                     key={feature.title}
                     className="rounded-[20px] sm:rounded-[28px] border border-[#dbe7e5] bg-white p-4 sm:p-5 md:p-6 shadow-[0_10px_28px_rgba(17,75,83,0.04)]"
@@ -382,7 +371,7 @@ export default function Rentals() {
               </p>
 
               <div className="mt-8 space-y-4">
-                {(location.locationPoints ?? []).map((point, index) => {
+                {(location.locationPoints || []).map((point, index) => {
                   const PointIcon = locationIcons[index] ?? MapPinned;
                   return (
                     <div

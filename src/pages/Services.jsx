@@ -3,7 +3,6 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { Link } from 'react-router-dom';
 import {
   Activity,
-  ArrowRight,
   Droplets,
   Plane,
   Stethoscope,
@@ -38,10 +37,8 @@ const SERVICES_QUERY = `*[_type == "servicesPage"][0]{
   serviceCards[]{
     title,
     description,
-    cta,
     icon,
-    image,
-    featured
+    image
   },
   ctaBanner{
     heading,
@@ -54,32 +51,6 @@ const SERVICES_QUERY = `*[_type == "servicesPage"][0]{
 }`;
 
 // ─── Fallback data ────────────────────────────────────────────────────────────
-
-const FALLBACK_IMAGES = [
-  '/array/wallhaven-mlwz78.png',
-  '/array/wallhaven-mlwz78.png',
-  '/array/wallhaven-7j1g9o.jpg',
-  '/array/wallhaven-d8e373.jpg',
-  '/array/wallhaven-e89l8k.jpg',
-  '/array/wallhaven-j51r5p.jpg',
-  '/array/wallhaven-je1w15.jpg',
-  '/array/wallhaven-mlwz78.png',
-  '/array/wallhaven-qr3175.jpg',
-  '/array/wallhaven-yq5ywl.jpg',
-];
-
-const FALLBACK_CARDS = [
-  { title: 'Dental Care', description: 'Advanced restorative and cosmetic dentistry focused on creating confident, healthy smiles for patients of every age.', cta: 'Learn More', icon: 'Stethoscope' },
-  { title: 'Family Practice', description: 'Personalized primary care for every stage of life, from pediatric wellness visits to long-term health management.', cta: 'Learn More', icon: 'Activity' },
-  { title: 'Gastroenterology', description: 'Specialized digestive care with modern diagnostics, treatment planning, and preventive support for lasting wellness.', cta: 'Learn More', icon: 'UtensilsCrossed' },
-  { title: 'IV Hydration Therapy', description: 'Rapid nutrient replenishment and hydration boosts designed for recovery, immunity, energy, and peak performance.', cta: 'Learn More', icon: 'Droplets' },
-  { title: 'Cosmetics & Aesthetics', description: 'Medical-grade aesthetic treatments tailored to enhance your natural beauty using advanced, minimally invasive techniques in a calm clinical setting.', cta: 'Explore Treatments', icon: 'Droplets', featured: true },
-  { title: 'Weight Loss Programs', description: 'Evidence-based medical weight management including structured plans, monitoring, and lifestyle coaching.', cta: 'Learn More', icon: 'Weight' },
-  { title: 'Vaccination Center', description: 'Comprehensive immunization services for pediatric, adult, and seasonal health requirements.', cta: 'Learn More', icon: 'Syringe' },
-  { title: 'Immigration Medical Exams', description: 'Certified civil surgeon exams and documentation support for USCIS immigration and naturalization processes.', cta: 'Learn More', icon: 'UserRound' },
-  { title: 'DOT Physicals', description: 'Certified medical exams for commercial drivers with compliant reporting and streamlined appointments.', cta: 'Learn More', icon: 'Truck' },
-  { title: 'Travel Health Guidance', description: 'Preventive consultation, destination-specific planning, and vaccine guidance for international travel.', cta: 'Learn More', icon: 'Plane' },
-];
 
 const FALLBACK_HERO = {
   badge: 'Complete Care Services',
@@ -112,14 +83,12 @@ function DynamicIcon({ name }) {
 
 // ─── ServiceCard ──────────────────────────────────────────────────────────────
 
-function ServiceCard({ title, description, cta, icon, image, index, featured = false }) {
+function ServiceCard({ title, description, icon, image, index }) {
   const isLeftColumn = index % 2 === 0;
 
   return (
     <article
-      className={`group relative flex overflow-hidden rounded-[20px] border border-[#e8e2dc] bg-white shadow-[0_10px_30px_rgba(17,75,83,0.04)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(17,75,83,0.12)] ${
-        featured ? 'md:min-h-[22.75rem] min-h-[160px]' : 'min-h-[160px]'
-      }`}
+      className="group relative flex overflow-hidden rounded-[20px] border border-[#e8e2dc] bg-white shadow-[0_10px_30px_rgba(17,75,83,0.04)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_36px_rgba(17,75,83,0.12)] min-h-[160px]"
     >
       <div
         className={`flex w-full transition-all duration-[420ms] ease-[cubic-bezier(0.4,0,0.2,1)] ${
@@ -131,20 +100,10 @@ function ServiceCard({ title, description, cta, icon, image, index, featured = f
           <div className="mb-3 sm:mb-4 flex h-9 sm:h-10 w-9 sm:w-10 items-center justify-center rounded-xl bg-[#e8f2f0] text-brand-teal">
             <DynamicIcon name={icon} />
           </div>
-          <h3
-            className={`mb-2 sm:mb-3 font-medium tracking-[-0.03em] text-brand-text-main ${
-              featured ? 'text-[1rem] sm:text-[1.3rem] md:text-[1.65rem]' : 'text-[0.95rem] sm:text-[1.1rem] md:text-[1.45rem]'
-            }`}
-          >
+          <h3 className="mb-2 sm:mb-3 font-medium tracking-[-0.03em] text-brand-text-main text-[0.95rem] sm:text-[1.1rem] md:text-[1.45rem]">
             {title}
           </h3>
-          <p className="mb-4 sm:mb-5 text-[0.75rem] sm:text-[0.85rem] md:text-[0.98rem] leading-5 sm:leading-6 md:leading-7 text-[#667085] line-clamp-2 md:line-clamp-none">{description}</p>
-          <Link
-            to="/floor-breakdown"
-            className="inline-flex items-center gap-1.5 text-[0.75rem] sm:text-[0.85rem] md:text-[0.9rem] font-semibold text-brand-teal transition-all duration-200 group-hover:gap-2 hover:opacity-75"
-          >
-            {cta} <ArrowRight size={12} sm:size={14} md:size={15} />
-          </Link>
+          <p className="text-[0.75rem] sm:text-[0.85rem] md:text-[0.98rem] leading-5 sm:leading-6 md:leading-7 text-[#667085] line-clamp-2 md:line-clamp-none">{description}</p>
         </div>
 
         {/* Hover image */}
@@ -174,7 +133,7 @@ export default function Services() {
   }, []);
 
   const hero       = data?.hero       ?? FALLBACK_HERO;
-  const cards      = data?.serviceCards ?? FALLBACK_CARDS;
+  const cards      = data?.serviceCards || [];
   const ctaBanner  = data?.ctaBanner  ?? FALLBACK_CTA;
 
   return (
@@ -203,7 +162,7 @@ export default function Services() {
                 key={card.title}
                 {...card}
                 index={index}
-                image={getImageSrc(card.image, FALLBACK_IMAGES[index])}
+                image={getImageSrc(card.image, '/images/IMG_4822.jpeg')}
               />
             ))}
           </div>

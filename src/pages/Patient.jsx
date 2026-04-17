@@ -23,7 +23,7 @@ function DynamicIcon({ name, ...props }) {
   return <Icon {...props} />;
 }
 
-// ─── Fallback (instant first-paint, no flash) ─────────────────────────────────
+// ─── Fallback (scalar strings only) ──────────────────────────────────────────
 const FALLBACK = {
   hero: {
     headingLine1: 'Welcome to Your',
@@ -32,38 +32,6 @@ const FALLBACK = {
     subtext:
       'Access your medical records, schedule appointments, and communicate with your care team through our secure specialized portals.',
   },
-  portalCards: [
-    {
-      title:       'Dental Care',
-      description: 'Access your portal for oral health history, x-rays, and dental appointment scheduling.',
-      cta:         'Dental Patient Portal',
-      icon:        'Shield',
-      iconBg:      'bg-[#dce8e8]',
-      buttonColor: '#0a727f',
-      href:        '#',
-    },
-    {
-      title:       'General Health',
-      description: 'Login for primary care, specialized treatments, labs, and telehealth messaging.',
-      cta:         'All Other Services Patient Portal',
-      icon:        'BriefcaseMedical',
-      iconBg:      'bg-[#e6eaef]',
-      buttonColor: '#496f95',
-      href:        '#',
-    },
-  ],
-  supportItems: [
-    {
-      title:       'Secure & Encrypted',
-      description: 'Your health information is protected by industry-standard HIPAA compliant encryption.',
-      icon:        'Lock',
-    },
-    {
-      title:       'Need Assistance?',
-      description: 'Contact our support team if you are having trouble logging into your patient account.',
-      icon:        'CircleHelp',
-    },
-  ],
   ctaBanner: {
     headingLine1: 'Exceptional Care,',
     headingLine2: 'Exceptional Experience.',
@@ -79,7 +47,7 @@ function getImageSrc(sanityImage, fallback) {
 }
 
 export default function Patient() {
-  const [data, setData] = useState(FALLBACK);
+  const [data, setData] = useState(null);
 
   useEffect(() => {
     client
@@ -88,10 +56,10 @@ export default function Patient() {
       .catch(console.error);
   }, []);
 
-  const hero         = data.hero         ?? FALLBACK.hero;
-  const portalCards  = data.portalCards?.length  ? data.portalCards  : FALLBACK.portalCards;
-  const supportItems = data.supportItems?.length ? data.supportItems : FALLBACK.supportItems;
-  const banner       = data.ctaBanner    ?? FALLBACK.ctaBanner;
+  const hero         = data?.hero         ?? FALLBACK.hero;
+  const portalCards  = data?.portalCards  || [];
+  const supportItems = data?.supportItems || [];
+  const banner       = data?.ctaBanner    ?? FALLBACK.ctaBanner;
   const bannerBg     = getImageSrc(banner.image, '/images/IMG_4827.jpeg');
 
   return (
@@ -152,7 +120,7 @@ export default function Patient() {
           {supportItems.map(({ title, description, icon }, index) => (
             <div
               key={title}
-              className={`px-8 py-8 text-left md:px-10 ${index === 0 ? 'md:border-r md:border-[#e7ecef]' : ''}`}
+              className={`px-8 py-8 text-left md:px-10 ${index < supportItems.length - 1 ? 'md:border-r md:border-[#e7ecef]' : ''}`}
             >
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#e8f2f2] text-[#0a727f]">
                 <DynamicIcon name={icon} size={17} strokeWidth={2.2} />

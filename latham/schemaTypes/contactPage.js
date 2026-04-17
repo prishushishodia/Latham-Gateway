@@ -75,6 +75,15 @@ export default {
       ],
     },
 
+    // ─── SERVICE DROPDOWN OPTIONS ─────────────────────────────
+    {
+      name: 'serviceOptions',
+      title: 'Service Dropdown Options',
+      type: 'array',
+      description: 'Options shown in the "Service of Interest" dropdown on the contact form.',
+      of: [{ type: 'string' }],
+    },
+
     // ─── FAQ ──────────────────────────────────────────────────
     {
       name: 'faq',

@@ -7,6 +7,7 @@ const CONTACT_QUERY = `*[_type == "contactPage"][0]{
   hero{ badge, headingLine1, headingLine2, subtext },
   contactInfo{ heading, subtext, address, phone, email, hoursLine1, hoursLine2 },
   stats[]{ value, label },
+  serviceOptions,
   map{ embedUrl, title },
   faq{ heading, subtext, items[]{ q, a } }
 }`;
@@ -28,12 +29,6 @@ const FALLBACK = {
     hoursLine1: 'Mon \u2013 Fri: 8am \u2013 6pm',
     hoursLine2: 'Sat: 9am \u2013 2pm',
   },
-  stats: [
-    { value: '10+',  label: 'Specialties'    },
-    { value: '3',    label: 'Floors of Care' },
-    { value: '5\u2605',   label: 'Patient Rating' },
-    { value: '1 Day',label: 'Response Time'  },
-  ],
   map: {
     embedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2934.123456789!2d-73.7600!3d42.7450!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89de0f0000000001%3A0x1!2s719+New+Loudon+Rd%2C+Latham%2C+NY+12110!5e0!3m2!1sen!2sus!4v1700000000000',
     title: 'Lathum Gateway Location',
@@ -41,13 +36,6 @@ const FALLBACK = {
   faq: {
     heading: 'Frequently Asked Questions',
     subtext: 'Quick answers to the questions we hear most often.',
-    items: [
-      { q: 'How do I schedule an appointment?', a: 'You can book online through our Patient Portal, call us directly, or fill out the contact form above and our team will reach out within one business day.' },
-      { q: 'Do you accept walk-ins?', a: 'Walk-ins are welcome for select services. We recommend calling ahead to confirm availability and reduce your wait time.' },
-      { q: 'What insurance plans do you accept?', a: 'We accept most major insurance plans. Please contact our billing team or check our Patient Portal for a full list of accepted providers.' },
-      { q: 'Is parking available at the facility?', a: 'Yes, complimentary parking is available in our dedicated lot directly adjacent to the building.' },
-      { q: 'How do I access my medical records?', a: 'Medical records can be requested through the Patient Portal or by contacting our front desk. Processing typically takes 3\u20135 business days.' },
-    ],
   },
 };
 
@@ -88,11 +76,12 @@ export default function Contact() {
       .catch(console.error);
   }, []);
 
-  const hero        = data?.hero        ?? FALLBACK.hero;
-  const info        = data?.contactInfo ?? FALLBACK.contactInfo;
-  const stats       = data?.stats       ?? FALLBACK.stats;
-  const map         = data?.map         ?? FALLBACK.map;
-  const faq         = data?.faq         ?? FALLBACK.faq;
+  const hero           = data?.hero           ?? FALLBACK.hero;
+  const info           = data?.contactInfo   ?? FALLBACK.contactInfo;
+  const stats          = data?.stats         || [];
+  const serviceOptions = data?.serviceOptions || [];
+  const map            = data?.map            ?? FALLBACK.map;
+  const faq            = data?.faq            || {};
 
   function handleChange(e) {
     setForm(f => ({ ...f, [e.target.name]: e.target.value }));
@@ -253,16 +242,9 @@ export default function Contact() {
                         <select name="service" value={form.service} onChange={handleChange}
                           className="rounded-[14px] border border-[#e2eded] bg-[#f8fbfb] px-4 py-3 text-[0.93rem] text-brand-text-main outline-none transition-[border-color,box-shadow] focus:border-brand-teal focus:shadow-[0_0_0_3px_rgba(2,99,98,0.08)]">
                           <option value="">Select a service</option>
-                          <option>Dental Care</option>
-                          <option>Family Practice</option>
-                          <option>IV Hydration Therapy</option>
-                          <option>Cosmetics & Aesthetics</option>
-                          <option>Weight Loss Programs</option>
-                          <option>Vaccination Center</option>
-                          <option>Immigration Medical Exams</option>
-                          <option>DOT Physicals</option>
-                          <option>Travel Health Guidance</option>
-                          <option>Other</option>
+                          {serviceOptions.map((opt) => (
+                            <option key={opt}>{opt}</option>
+                          ))}
                         </select>
                       </div>
                     </div>

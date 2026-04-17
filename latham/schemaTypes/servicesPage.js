@@ -60,12 +60,6 @@ export default {
               type: 'text',
             },
             {
-              name: 'cta',
-              title: 'CTA Label',
-              type: 'string',
-              // e.g. "Learn More" or "Explore Treatments"
-            },
-            {
               name: 'icon',
               title: 'Icon Name (lucide-react)',
               type: 'string',
@@ -78,16 +72,9 @@ export default {
               options: { hotspot: true },
               description: 'Image revealed on card hover',
             },
-            {
-              name: 'featured',
-              title: 'Featured Card',
-              type: 'boolean',
-              description: 'Featured cards are taller and more prominent',
-              initialValue: false,
-            },
           ],
           preview: {
-            select: { title: 'title', subtitle: 'cta' },
+            select: { title: 'title', subtitle: 'description' },
           },
         },
       ],

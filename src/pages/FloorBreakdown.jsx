@@ -54,97 +54,10 @@ function getFloorImage(sanityImage, index) {
   return LOCAL_IMAGES[index % LOCAL_IMAGES.length];
 }
 
-// ─── Fallback data (renders instantly on first paint — no flash) ───────────────
-const FALLBACK_DATA = {
-  hero: {
-    badge: 'Floor Breakdown',
-    headingLine1: 'Healing in',
-    headingLine2: 'Harmony.',
-    subtext: 'Three purposefully designed floors — two dedicated to clinical excellence, one offering premium practitioner suites.',
-    backgroundImage: null,
-    ctas: { primaryLabel: 'View All Services', primaryHref: '/services', secondaryLabel: 'Book a Tour', secondaryHref: '/contact' },
-  },
-  statsBar: [
-    { value: '3', label: 'Floors' },
-    { value: '50+', label: 'Providers' },
-    { value: '10k+', label: 'Patients/yr' },
-    { value: '98%', label: 'Satisfaction' },
-  ],
-  facilityDirectory: {
-    badge: 'Facility Directory',
-    headingLine1: 'Every floor,',
-    headingLine2: 'a purpose.',
-    description: 'From primary care to premium rental suites, each level of Lathum Gateway is designed with intention.',
-    floors: [
-      {
-        tabLabel: 'Medical Hub',
-        floorCode: '1',
-        title: 'Medical Hub — Ground Floor',
-        description: 'Our ground floor houses primary care, urgent care, and diagnostic services in a welcoming, efficient environment built around patient flow.',
-        image: null,
-        tags: ['Primary Care', 'Urgent Care', 'Diagnostics', 'Lab Services'],
-        activeLabel: 'ACTIVE',
-        ctas: { primaryLabel: 'View Services', primaryHref: '/services' },
-      },
-      {
-        tabLabel: 'Wellness Center',
-        floorCode: '2',
-        title: 'Wellness Center — Second Floor',
-        description: 'Specialty clinics, physical therapy, and integrative wellness services share a calm, design-forward floor built for focused, restorative care.',
-        image: null,
-        tags: ['Specialty Clinics', 'Physical Therapy', 'Integrative Care'],
-        activeLabel: 'ACTIVE',
-        ctas: { primaryLabel: 'View Services', primaryHref: '/services' },
-      },
-      {
-        tabLabel: 'Rental Suites',
-        floorCode: '3',
-        title: 'Rental Suites — Top Floor',
-        description: 'Premium professional suites available for lease. Ideal for independent practitioners and wellness businesses seeking a prestigious address.',
-        image: null,
-        tags: ['Private Suites', 'Shared Reception', 'High-Speed Internet', 'Parking Included'],
-        activeLabel: 'FOR LEASE',
-        ctas: { primaryLabel: 'Explore Leasing', primaryHref: '/rentals' },
-      },
-    ],
-  },
-  architecture: {
-    badge: 'Design Philosophy',
-    headingLine1: 'Future-Proof',
-    headingLine2: 'Architecture.',
-    description: 'Every square foot is designed with clinical function and human comfort in mind — a building that works as hard as the people inside it.',
-    features: [
-      { title: 'Clinical Optimization', description: 'Layouts pre-configured for medical equipment, private consult rooms, and seamless patient flow.' },
-      { title: 'Accessibility First', description: 'Dual elevators, ADA-compliant design, and intuitive wayfinding throughout every level.' },
-      { title: 'Sustainable Materials', description: 'Energy-efficient systems, generous natural light, and refined finishes that stand the test of time.' },
-    ],
-    gallery: {
-    heading: 'Inside',
-    headingAccent: 'Lathum Gateway',
-    tourLabel: 'Book a tour',
-    tourHref: '/contact',
-    photos: [
-      { label: 'Main Entrance', image: null },
-      { label: 'Medical Hub',   image: null },
-      { label: 'Wellness Floor', image: null },
-      { label: 'Grounds',       image: null },
-      { label: 'Rental Suites', image: null },
-    ],
-  },
-    ctaBox: {
-      heading: 'Ready to experience it in person?',
-      subtext: 'Schedule a tour and see how Lathum Gateway can elevate your practice or care experience.',
-      primaryLabel: 'Book Appointment',
-      primaryHref: '/contact',
-      secondaryLabel: 'Schedule a Tour',
-      secondaryHref: '/contact',
-    },
-  },
-};
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function FloorBreakdown() {
-  const [data, setData]               = useState(FALLBACK_DATA);
+  const [data, setData]               = useState(null);
   const [activeFloor, setActiveFloor] = useState(0);
 
   useEffect(() => {
@@ -188,13 +101,13 @@ export default function FloorBreakdown() {
       .catch(console.error);
   }, []);
 
-  const hero      = data.hero              || {};
-  const stats     = data.statsBar          || [];
-  const directory = data.facilityDirectory || {};
-  const floors    = directory.floors       || [];
-  const arch      = data.architecture      || {};
-  const features  = arch.features          || [];
-  const gallery   = data.gallery           || {};
+  const hero      = data?.hero              || {};
+  const stats     = data?.statsBar          || [];
+  const directory = data?.facilityDirectory || {};
+  const floors    = directory.floors        || [];
+  const arch      = data?.architecture      || {};
+  const features  = arch.features           || [];
+  const gallery   = data?.gallery           || {};
 
   const heroBgSrc = hero.backgroundImage
     ? urlFor(hero.backgroundImage).width(1920).url()
@@ -541,23 +454,15 @@ export default function FloorBreakdown() {
 
       {/* ── GALLERY ──────────────────────────────────────────────────── */}
       {(() => {
-        const FALLBACK_PHOTOS = [
-          { label: 'Main Entrance',  src: '/images/IMG_4829.jpeg' },
-          { label: 'Medical Hub',    src: '/images/IMG_4822.jpeg' },
-          { label: 'Wellness Floor', src: '/images/IMG_4824.jpeg' },
-          { label: 'Grounds',        src: '/images/IMG_4827.jpeg' },
-          { label: 'Rental Suites',  src: '/images/IMG_4823.jpeg' },
-        ];
-
         const cmsPhotos = gallery.photos || [];
-        const items = cmsPhotos.length > 0
-          ? cmsPhotos.map((p, i) => ({
-              label: p.label || '',
-              src:   p.image ? urlFor(p.image).width(1200).url() : (FALLBACK_PHOTOS[i] ? FALLBACK_PHOTOS[i].src : FALLBACK_PHOTOS[0].src),
-              lqip:  p.imageLqip || undefined,
-              hash:  p.image ? undefined : LOCAL_BLURHASH[FALLBACK_PHOTOS[i] ? FALLBACK_PHOTOS[i].src : FALLBACK_PHOTOS[0].src],
-            }))
-          : FALLBACK_PHOTOS.map(p => ({ ...p, hash: LOCAL_BLURHASH[p.src] }));
+        const items = cmsPhotos.map((p) => ({
+          label: p.label || '',
+          src:   p.image ? urlFor(p.image).width(1200).url() : '/images/IMG_4822.jpeg',
+          lqip:  p.imageLqip || undefined,
+          hash:  p.image ? undefined : LOCAL_BLURHASH['/images/IMG_4822.jpeg'],
+        }));
+
+        if (items.length === 0) return null;
 
         const count = items.length;
         // First item spans 2 cols when count is odd (≥3) so rows pair up evenly
